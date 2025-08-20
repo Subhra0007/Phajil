@@ -10,7 +10,7 @@ export default function HomeNostalgic() {
     <section className="bg-gray-100 py-10">
       <div className="mx-auto max-w-6xl px-6">
         <h2 className="text-2xl md:text-3xl font-black text-black mb-6 text-center">
-          Nostalgic Kolkata→
+          Nostalgic Kolkata→ →
         </h2>
 
         {/* Responsive Grid */}

@@ -1,21 +1,23 @@
 import { FaFacebookF, FaInstagram, FaWhatsapp, FaPhoneAlt, FaEnvelope } from "react-icons/fa";
+import { Link } from "react-router-dom";
 import phajilLogo from "../assets/phajilLogo.png";
+
 const Footer = () => {
   return (
-    <footer className="bg-[#1e1e1e] text-white py-10 px-6">
-      <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-around gap-10 flex-wrap">
+    <footer className="bg-[#1e1e1e] text-white py-10 px-6 border-t border-white/20">
+      <div className="max-w-6xl mx-auto flex flex-col lg:flex-row justify-around gap-10 flex-wrap">
+        
         {/* Logo & About */}
-        <div className="w-full md:w-[250px] text-center md:text-left">
-         <img
+        <div className="w-full md:w-[250px] text-center lg:text-left">
+          <img
             src={phajilLogo}
             alt="phajilLogo"
             className="h-12 w-auto cursor-pointer mx-auto lg:mx-0"
-         />
-         
+          />
           <p className="mt-2 text-gray-300">
             PHAJIL is a Bengali graphic T-shirt brand. Where phajils home grown
-            some awesome tshirt designs which features our language and
-            tradition
+            some awesome t-shirt designs which feature our language and
+            tradition.
           </p>
           <div className="flex justify-center md:justify-start space-x-4 mt-4 text-yellow-400 text-xl">
             <FaFacebookF className="cursor-pointer hover:scale-110 transition" />
@@ -25,33 +27,33 @@ const Footer = () => {
         </div>
 
         {/* Useful Links */}
-        <div className="w-full sm:w-[180px] text-center md:text-left">
+        <div className="w-full md:w-[180px] text-center lg:text-left">
           <h3 className="text-lg font-semibold mb-3">Useful Links</h3>
           <ul className="space-y-2 text-gray-300">
-            <li><a href="#">About Us</a></li>
-            <li><a href="#">Contact Us</a></li>
-            <li><a href="#">Shipping Policy</a></li>
-            <li><a href="#">Privacy Policy</a></li>
-            <li><a href="#">Terms And Conditions</a></li>
-            <li><a href="#">Exchange and Returns Policy</a></li>
-            <li><a href="#">Blog</a></li>
+            <li><Link to="/about" className="hover:text-white transition">About Us</Link></li>
+            <li><Link to="/contact" className="hover:text-white transition">Contact Us</Link></li>
+            <li><Link to="/shipping-policy" className="hover:text-white transition">Shipping Policy</Link></li>
+            <li><Link to="/privacy-policy" className="hover:text-white transition">Privacy Policy</Link></li>
+            <li><Link to="/terms" className="hover:text-white transition">Terms & Conditions</Link></li>
+            <li><Link to="/returns" className="hover:text-white transition">Exchange & Returns Policy</Link></li>
+            <li><Link to="/blog" className="hover:text-white transition">Blog</Link></li>
           </ul>
         </div>
 
         {/* Online Shopping */}
-        <div className="w-full sm:w-[180px] text-center md:text-left">
+        <div className="w-full md:w-[180px] text-center lg:text-left">
           <h3 className="text-lg font-semibold mb-3">Online Shopping</h3>
           <ul className="space-y-2 text-gray-300">
-            <li><a href="#">Feluda</a></li>
-            <li><a href="#">Unisex</a></li>
-            <li><a href="#">Women</a></li>
-            <li><a href="#">Order Tracking</a></li>
-            <li><a href="#">Contact Us</a></li>
+            <li><Link to="/feluda" className="hover:text-white transition">Feluda</Link></li>
+            <li><Link to="/unisex" className="hover:text-white transition">Unisex</Link></li>
+            <li><Link to="/women" className="hover:text-white transition">Women</Link></li>
+            <li><Link to="/order-tracking" className="hover:text-white transition">Order Tracking</Link></li>
+            <li><Link to="/contact" className="hover:text-white transition">Contact Us</Link></li>
           </ul>
         </div>
 
         {/* Contact */}
-        <div className="w-full sm:w-[220px] text-center md:text-left">
+        <div className="w-full md:w-[220px] text-center lg:text-left">
           <h3 className="text-lg font-semibold mb-3">Get In Touch</h3>
           <p className="text-gray-300">
             Nagarukhra, Nadia, <br />
@@ -72,8 +74,8 @@ const Footer = () => {
       </div>
 
       {/* Bottom text */}
-      <div className="mt-10 text-center text-gray-400 text-sm">
-        © 2023 Phajil. All Right reserved!
+      <div className="mt-10 text-center text-gray-400 text-sm border-t border-white/10 pt-4">
+        © {new Date().getFullYear()} Phajil. All Rights Reserved.
       </div>
     </footer>
   );

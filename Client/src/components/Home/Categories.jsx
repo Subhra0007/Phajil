@@ -16,7 +16,7 @@ export default function CategorySection() {
 
   return (
     <section className=" bg-gray-100  py-10">
-      <div className=" max-w-7xl mx-auto px-6 cursor-pointer">
+      <div className=" max-w-6xl mx-auto px-6 cursor-pointer">
       <Swiper
         modules={[Autoplay]}
         autoplay={{ delay: 2000, disableOnInteraction: false }}
@@ -32,10 +32,10 @@ export default function CategorySection() {
       >
         {categories.map((cat, i) => (
           <SwiperSlide key={i} className="flex justify-center">
-            <div className="relative flex flex-col items-center transition-transform duration-300 hover:scale-105">
+            <div className="relative flex flex-col items-center transition-transform duration-300 hover:scale-90">
               
               {/* Circle Image */}
-              <div className="w-60 h-60 sm:w-70 sm:h-70 rounded-full overflow-hidden shadow-lg border border-gray-200 bg-white flex items-center justify-center">
+              <div className="w-60 h-60 sm:w-70 sm:h-70 rounded-full overflow-hidden shadow-2xl border border-gray-800 bg-black flex items-center justify-center">
                 <img
                   src={cat.img}
                   alt={cat.name}

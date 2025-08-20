@@ -8,7 +8,7 @@ import hero2 from "..//../assets/hero2.png"; // Independence T-shirt
 
 export default function Hero() {
   return (
-    <section className="w-full mt-20">
+    <section className="w-full mt-20 ">
       <Swiper
         modules={[Autoplay, Pagination]}
         autoplay={{ delay: 3000, disableOnInteraction: false }}
