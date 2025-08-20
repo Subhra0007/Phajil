@@ -6,7 +6,7 @@ export default function Contact() {
       <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 px-6">
         
         {/* Left Form Section */}
-        <div className="bg-gray-100 p-6 rounded-2xl  shadow-2xl border-b-neutral-300">
+        <div className="bg-gray-100 p-6 rounded-2xl  shadow-2xl border-b-neutral-300 border-y-4 border-yellow-400">
           <h2 className="text-3xl font-bold mb-4 ">Leave a Message</h2>
           <p className="text-gray-800 mb-8">
             If you have any questions, please feel free to get in touch with us.  
@@ -45,7 +45,7 @@ export default function Contact() {
         </div>
 
         {/* Right Info Section */}
-        <div className="bg-white/50 border border-white/70 rounded-xl p-8 shadow-2xl backdrop-blur">
+        <div className="bg-gray-100 p-6 rounded-2xl  shadow-2xl border-b-neutral-300 border-y-4 border-yellow-400">
           <h2 className="text-2xl font-bold mb-6">Our Store</h2>
           <div className="space-y-4">
             <div className="flex items-start gap-3">

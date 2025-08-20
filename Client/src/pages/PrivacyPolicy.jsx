@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 export default function PrivacyPolicy() {
   return (
-    <div className="bg-gray-100 text-gray-800 ">
+    <div className="bg-gray-100 text-gray-600 ">
      
       {/* Hero Section */}
       <section className="bg-gradient-to-r from-yellow-400 to-yellow-500 text-white py-16 text-center shadow-lg mt-15">
@@ -12,9 +12,9 @@ export default function PrivacyPolicy() {
       </section>
 
       {/* Content Section */}
-      <section className="max-w-5xl mx-auto px-6 py-12 space-y-10">
+      <section className="max-w-6xl mx-auto px-6 py-12 space-y-10">
         {/* Card 1 */}
-        <div className="bg-white p-8 rounded-2xl shadow-md hover:shadow-xl transition duration-300">
+        <div className="bg-white  rounded-lg p-6 space-y-4 border-l-4 border-yellow-400 shadow-md hover:shadow-xl transition duration-300">
           <h2 className="text-2xl font-bold text-gray-900 mb-4">Consent</h2>
           <p>
             By using our website, you hereby consent to our Privacy Policy and
@@ -23,7 +23,7 @@ export default function PrivacyPolicy() {
         </div>
 
         {/* Card 2 */}
-        <div className="bg-white p-8 rounded-2xl shadow-md hover:shadow-xl transition duration-300">
+        <div className="bg-white  rounded-lg p-6 space-y-4 border-l-4 border-yellow-400 shadow-md hover:shadow-xl transition duration-300">
           <h2 className="text-2xl font-bold text-gray-900 mb-4">
             Information We Collect
           </h2>
@@ -39,7 +39,7 @@ export default function PrivacyPolicy() {
         </div>
 
         {/* Card 3 */}
-        <div className="bg-white p-8 rounded-2xl shadow-md hover:shadow-xl transition duration-300">
+        <div className="bg-white  rounded-lg p-6 space-y-4 border-l-4 border-yellow-400 shadow-md hover:shadow-xl transition duration-300">
           <h2 className="text-2xl font-bold text-gray-900 mb-4">
             How We Use Your Information
           </h2>
@@ -56,7 +56,7 @@ export default function PrivacyPolicy() {
         </div>
 
         {/* Card 4 */}
-        <div className="bg-white p-8 rounded-2xl shadow-md hover:shadow-xl transition duration-300">
+        <div className="bg-white  rounded-lg p-6 space-y-4 border-l-4 border-yellow-400 shadow-md hover:shadow-xl transition duration-300">
           <h2 className="text-2xl font-bold text-gray-900 mb-4">Log Files</h2>
           <p>
            Phajil.com follows a standard procedure of using log files. These files log visitors when they visit websites. All hosting companies do this and a part of hosting services’ analytics. The information collected by log files include internet protocol (IP) addresses, browser type, Internet Service Provider (ISP), date and time stamp, referring/exit pages, and possibly the number of clicks. These are not linked to any information that is personally identifiable. The purpose of the information is for analyzing trends, administering the site, tracking users’ movement on the website, and gathering demographic information.
@@ -64,7 +64,7 @@ export default function PrivacyPolicy() {
         </div>
 
         {/* Card 5 */}
-        <div className="bg-white p-8 rounded-2xl shadow-md hover:shadow-xl transition duration-300">
+        <div className="bg-white  rounded-lg p-6 space-y-4 border-l-4 border-yellow-400 shadow-md hover:shadow-xl transition duration-300">
           <h2 className="text-2xl font-bold text-gray-900 mb-4">
             Cookies & Web Beacons
           </h2>
@@ -73,7 +73,7 @@ export default function PrivacyPolicy() {
           </p>
         </div>
          {/* Card 6 */}
-        <div className="bg-white p-8 rounded-2xl shadow-md hover:shadow-xl transition duration-300">
+        <div className="bg-white  rounded-lg p-6 space-y-4 border-l-4 border-yellow-400 shadow-md hover:shadow-xl transition duration-300">
           <h2 className="text-2xl font-bold text-gray-900 mb-4">
             Advertising Partners Privacy Policies
           </h2>
@@ -88,7 +88,7 @@ export default function PrivacyPolicy() {
           </p>
         </div>
       {/* card 7 */}
-       <div className="bg-white p-8 rounded-2xl shadow-md hover:shadow-xl transition duration-300">
+       <div className="bg-white  rounded-lg p-6 space-y-4 border-l-4 border-yellow-400 shadow-md hover:shadow-xl transition duration-300">
           <h2 className="text-2xl font-bold text-gray-900 mb-4">
           Third Party Privacy Policies
           </h2>
@@ -100,7 +100,7 @@ export default function PrivacyPolicy() {
           </p>
         </div>
          {/* Card 8 */}
-         <div className="bg-white p-8 rounded-2xl shadow-md hover:shadow-xl transition duration-300">
+         <div className="bg-white  rounded-lg p-6 space-y-4 border-l-4 border-yellow-400 shadow-md hover:shadow-xl transition duration-300">
           <h2 className="text-2xl font-bold text-gray-900 mb-4">
            CCPA Privacy Rights (Do Not Sell My Personal Information)
           </h2>
@@ -114,7 +114,7 @@ export default function PrivacyPolicy() {
         </div>
 
         {/* Card 9 */}
-        <div className="bg-white p-8 rounded-2xl shadow-md hover:shadow-xl transition duration-300">
+        <div className="bg-white  rounded-lg p-6 space-y-4 border-l-4 border-yellow-400 shadow-md hover:shadow-xl transition duration-300">
           <h2 className="text-2xl font-bold text-gray-900 mb-4">
             GDPR Data Protection Rights
           </h2>
@@ -131,7 +131,7 @@ export default function PrivacyPolicy() {
         </div>
 
         {/* Card 10 */}
-        <div className="bg-white p-8 rounded-2xl shadow-md hover:shadow-xl transition duration-300">
+        <div className="bg-white  rounded-lg p-6 space-y-4 border-l-4 border-yellow-400 shadow-md hover:shadow-xl transition duration-300">
           <h2 className="text-2xl font-bold text-gray-900 mb-4">
             Children’s Information
           </h2>
@@ -143,7 +143,7 @@ export default function PrivacyPolicy() {
           </p>
         </div>
       {/* Card 11 */}
-        <div className="bg-white p-8 rounded-2xl shadow-md hover:shadow-xl transition duration-300">
+        <div className="bg-white  rounded-lg p-6 space-y-4 border-l-4 border-yellow-400 shadow-md hover:shadow-xl transition duration-300">
           <h2 className="text-2xl font-bold text-gray-900 mb-4">
            Changes to This Privacy Policy
           </h2>
@@ -153,7 +153,7 @@ export default function PrivacyPolicy() {
         </div>
 
         {/* Card 12 */}
-        <div className="bg-white p-8 rounded-2xl shadow-md hover:shadow-xl transition duration-300">
+        <div className="bg-white  rounded-lg p-6 space-y-4 border-l-4 border-yellow-400 shadow-md hover:shadow-xl transition duration-300">
           <h2 className="text-2xl font-bold text-gray-900 mb-4">Contact Us</h2>
           <p>
             If you have any questions or suggestions about our Privacy Policy, do not hesitate to
