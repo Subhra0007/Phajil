@@ -1,9 +1,12 @@
+// src/components/TestimonialSlider.jsx
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay, Pagination } from "swiper/modules";
+import { Navigation, Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
+
 import test1 from "..//../assets/test1.jpg";
 import test2 from "..//../assets/test2.jpg";
+
 const testimonials = [
   {
     text: "Awesome T shirt all over very good product",
@@ -18,7 +21,7 @@ const testimonials = [
     img: test1,
   },
   {
-    text: "Unmesh Ganguly",
+    text: "Nice Fitting",
     img: test2,
   },
   {
@@ -31,37 +34,37 @@ const testimonials = [
   },
 ];
 
-const TestimonialSection = () => {
+export default function TestimonialSlider() {
   return (
-    <section className="py-10 bg-gray-100">
+    <section className="bg-white py-16 text-center">
       <div className="max-w-6xl mx-auto px-6">
         <Swiper
-          modules={[Autoplay]}
-          spaceBetween={30}
-          slidesPerView={1}
-          breakpoints={{
-            640: { slidesPerView: 2 },
-            1024: { slidesPerView: 3 },
+          modules={[Navigation, Autoplay]}
+          navigation
+          spaceBetween={20}
+          loop
+          autoplay={{
+            delay: 3000,
+            disableOnInteraction: false,
           }}
-          autoplay={{ delay: 3000 }}
-          loop={true}
-        
+          breakpoints={{
+            0: { slidesPerView: 1 }, // mobile
+            640: { slidesPerView: 2 }, // tablet
+            1024: { slidesPerView: 3 }, // desktop
+          }}
+          className="pb-10"
         >
-          {testimonials.map((testimonial, index) => (
+          {testimonials.map((item, index) => (
             <SwiperSlide key={index}>
-              <div className="flex flex-col items-center text-center relative">
-                {/* Speech Bubble */}
-                <div className="bg-yellow-400 text-black text-base font-medium px-6 py-4 rounded-3xl relative w-full min-h-[120px] flex items-center justify-center">
-                  <p>{testimonial.text}</p>
-                  <div className="absolute bottom-[-10px] left-1/2 transform -translate-x-1/2 w-4 h-4 bg-yellow-400 rotate-45"></div>
-                </div>
-
-                {/* Avatar */}
+              <div className="bg-yellow-400 rounded-2xl shadow-lg p-6 flex flex-col items-center justify-between text-black min-h-[220px] ">
                 <img
-                  src={testimonial.img}
-                  alt="testimonial"
-                  className="w-16 h-16 rounded-full mt-6 border-4 border-yellow-400 object-cover"
+                  src={item.img}
+                  alt={item.text}
+                  className="w-24 h-24 rounded-full object-cover mb-4"
                 />
+                <p className="text-sm font-semibold text-center leading-relaxed">
+                  {item.text}
+                </p>
               </div>
             </SwiperSlide>
           ))}
@@ -69,6 +72,4 @@ const TestimonialSection = () => {
       </div>
     </section>
   );
-};
-
-export default TestimonialSection;
+}

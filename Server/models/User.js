@@ -1,47 +1,33 @@
-const mongoose = require("mongoose");
+// models/User.js
+import mongoose from "mongoose";
 
-const userSchema = new mongoose.Schema({
-      firstName: {
-            type:String,
-            required:true,
-            trim:true,
-      },
+const userSchema = new mongoose.Schema(
+  {
+    firstName: { type: String, required: true, trim: true },
+    lastName: { type: String, required: true, trim: true },
+    contactNumber: { type: String, required: true, trim: true }, // ✅ direct in User
+    email: { type: String, required: true, unique: true, lowercase: true },
+    password: { type: String, required: true },
 
-      lastName: {
-            type:String,
-            required:true,
-            trim:true,
-      },
+    accountType: {
+      type: String,
+      enum: ["Admin", "User"],
+      default: "User",
+    },
 
-      email: {
-            type:String,
-            required:true,
-            trim:true
-      },
+    avatar: { type: String, default: "" },
 
-      password: {
-            type:String,
-            required:true,
-      },
+    // reference to Profile (extra info)
+    additionalDetails: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Profile",
+    },
 
-      accountType: {
-            type:String,
-            enum:["Admin", "User"],
-            required:true,
-         
-      },
+    token: { type: String, default: null },
+    resetPasswordExpires: { type: Date, default: null },
+  },
+  { timestamps: true }
+);
 
-      additionalDetails: {
-            type:mongoose.Schema.Types.ObjectId,
-            required:true,
-            ref:"Profile",
-      },
-
-      image: {
-            type:String,
-            required:true,
-      }
-
-})
-
-module.exports = mongoose.model("User", userSchema);
+const User = mongoose.models.User || mongoose.model("User", userSchema);
+export default User;

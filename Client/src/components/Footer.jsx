@@ -28,7 +28,7 @@ const Footer = () => {
 
         {/* Useful Links */}
         <div className="w-full md:w-[180px] text-center lg:text-left">
-          <h3 className="text-lg font-semibold mb-3">Useful Links</h3>
+          <h3 className="text-lg font-semibold mb-3 text-yellow-400">Useful Links</h3>
           <ul className="space-y-2 text-gray-300">
             <li><Link to="/about" className="hover:text-white transition">About Us</Link></li>
             <li><Link to="/contact" className="hover:text-white transition">Contact Us</Link></li>
@@ -42,7 +42,7 @@ const Footer = () => {
 
         {/* Online Shopping */}
         <div className="w-full md:w-[180px] text-center lg:text-left">
-          <h3 className="text-lg font-semibold mb-3">Online Shopping</h3>
+          <h3 className="text-lg font-semibold mb-3 text-yellow-400">Online Shopping</h3>
           <ul className="space-y-2 text-gray-300">
             <li><Link to="/feluda" className="hover:text-white transition">Feluda</Link></li>
             <li><Link to="/unisex" className="hover:text-white transition">Unisex</Link></li>
@@ -54,7 +54,7 @@ const Footer = () => {
 
         {/* Contact */}
         <div className="w-full md:w-[220px] text-center lg:text-left">
-          <h3 className="text-lg font-semibold mb-3">Get In Touch</h3>
+          <h3 className="text-lg font-semibold mb-3 text-yellow-400">Get In Touch</h3>
           <p className="text-gray-300">
             Nagarukhra, Nadia, <br />
             West Bengal <br />
@@ -75,7 +75,7 @@ const Footer = () => {
 
       {/* Bottom text */}
       <div className="mt-10 text-center text-gray-400 text-sm border-t border-white/10 pt-4">
-        © {new Date().getFullYear()} Phajil. All Rights Reserved.
+        © 2023 Phajil. All Rights Reserved.
       </div>
     </footer>
   );

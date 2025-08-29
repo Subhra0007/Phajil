@@ -1,18 +1,14 @@
-const mongoose = require("mongoose");
+// models/Profile.js
+import mongoose from "mongoose";
 
 const profileSchema = new mongoose.Schema({
-      gender: {
-            type:String,
-      },
-      email: {
-            type:String,
-            required:true,
-            trim:true
-      },
-      contactNumber: {
-            type:Number,
-            trim:true,
-      },
-})
+  gender: { type: String },
+  dateOfBirth: { type: Date },
+  address: { type: String },
+  about: { type: String },
+});
 
-module.exports = mongoose.model("Profile", profileSchema);
+const Profile =
+  mongoose.models.Profile || mongoose.model("Profile", profileSchema);
+
+export default Profile;
