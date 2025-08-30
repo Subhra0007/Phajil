@@ -1,4 +1,3 @@
-//index.js
 import express from "express";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
@@ -8,7 +7,9 @@ import userRoutes from "./routes/user.js";
 import profileRoutes from "./routes/profile.js";
 import contactRoutes from "./routes/contact.js";
 import { database } from "./config/database.js";
+import adminRoutes from "./routes/admin.js";
 import { cloudinaryConnect } from "./config/cloudinary.js";
+import addressRoutes from "./routes/address.js";
 
 dotenv.config();
 
@@ -18,33 +19,36 @@ console.log("EMAIL_PASS:", process.env.EMAIL_PASS ? "Loaded ✅" : "Missing ❌"
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// ✅ Connect DB
+// Connect DB
 database.connect();
 
-// ✅ Middleware
+// Middleware
 app.use(express.json());
 app.use(cookieParser());
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL || "http://localhost:5173",
+    origin: [process.env.CLIENT_URL, process.env.ADMIN_URL],
     credentials: true,
   })
 );
 app.use(fileUpload({ useTempFiles: true, tempFileDir: "/tmp/" }));
 
-// ✅ Cloudinary
+// Cloudinary
 cloudinaryConnect();
 
-// ✅ Routes
+// Routes
 app.use("/api/v1/auth", userRoutes);
 app.use("/api/v1/profile", profileRoutes);
-app.use("/api/v1", contactRoutes); // ✅ fixed (removed extra slash)
+app.use("/api/v1", contactRoutes);
+app.use("/api/v1/admin", adminRoutes);
+app.use("/api/v1/address", addressRoutes);
 
+// Test Route
 app.get("/", (req, res) => {
   res.json({ success: true, message: "Server is running..." });
 });
 
-// ✅ Error handling
+// Error handling
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ error: err.message });

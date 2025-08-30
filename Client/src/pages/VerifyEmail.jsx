@@ -1,57 +1,63 @@
 import { useEffect, useState } from "react";
 import OtpInput from "react-otp-input";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { BiArrowBack } from "react-icons/bi";
 import { RxCountdownTimer } from "react-icons/rx";
-import { useDispatch, useSelector } from "react-redux";
-import { sendOtp, signUp } from "../services/operations/authAPI";
-import { useNavigate } from "react-router-dom";
+import API from "../components/axios";
 
-function VerifyEmail() {
+export default function VerifyEmail() {
   const [otp, setOtp] = useState("");
-  const { signupData, loading } = useSelector((state) => state.auth);
-  const dispatch = useDispatch();
+  const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
+  // Retrieve email from localStorage (set in SignUp.jsx)
   useEffect(() => {
-    // Only allow access of this route when user has filled the signup form
-    if (!signupData) {
+    const storedEmail = localStorage.getItem("signupEmail");
+    if (!storedEmail) {
       navigate("/signup");
+    } else {
+      setEmail(storedEmail);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [navigate]);
 
-  const handleVerifyAndSignup = (e) => {
+  const handleVerifyAndSignup = async (e) => {
     e.preventDefault();
-    const {
-      accountType,
-      firstName,
-      lastName,
-      email,
-      password,
-      confirmPassword,
-    } = signupData;
+    setLoading(true);
+    setError("");
+    try {
+      const res = await API.post("/auth/verifyotp", { email, otp });
+      if (res.data.success) {
+        alert("OTP Verified Successfully!");
+        navigate("/signup"); // Return to signup to complete form
+      } else {
+        setError("Invalid OTP, please try again.");
+      }
+    } catch (err) {
+      setError(err.response?.data?.message || "OTP verification failed.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    dispatch(
-      signUp(
-        accountType,
-        firstName,
-        lastName,
-        email,
-        password,
-        confirmPassword,
-        otp,
-        navigate
-      )
-    );
+  const handleResendOtp = async () => {
+    setLoading(true);
+    setError("");
+    try {
+      await API.post("/auth/sendotp", { email });
+      alert("OTP resent to your email!");
+    } catch (err) {
+      setError(err.response?.data?.message || "Failed to resend OTP.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="min-h-[calc(100vh-3.5rem)] grid place-items-center">
       {loading ? (
-        <div>
-          <div className="spinner"></div>
-        </div>
+        <div className="spinner"></div>
       ) : (
         <div className="max-w-[500px] p-4 lg:p-8">
           <h1 className="text-richblack-5 font-semibold text-[1.875rem] leading-[2.375rem]">
@@ -80,6 +86,7 @@ function VerifyEmail() {
                 gap: "0 6px",
               }}
             />
+            {error && <p className="text-red-400 text-sm mt-2">{error}</p>}
             <button
               type="submit"
               className="w-full bg-yellow-50 py-[12px] px-[12px] rounded-[8px] mt-6 font-medium text-richblack-900"
@@ -95,7 +102,7 @@ function VerifyEmail() {
             </Link>
             <button
               className="flex items-center text-blue-100 gap-x-2"
-              onClick={() => dispatch(sendOtp(signupData.email))}
+              onClick={handleResendOtp}
             >
               <RxCountdownTimer />
               Resend it
@@ -106,5 +113,3 @@ function VerifyEmail() {
     </div>
   );
 }
-
-export default VerifyEmail;

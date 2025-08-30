@@ -1,7 +1,8 @@
+//controllers/ForgotPassword.jsx
 import { useState } from "react";
 import API from "../components/axios";
 
-export default function ResetPassword() {
+export default function ForgotPassword() {
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
@@ -20,7 +21,7 @@ export default function ResetPassword() {
 
   return (
     <div className="flex items-center justify-center min-h-[80vh] bg-gray-100">
-      <div className="bg-white relative rounded-2xl shadow-lg w-full max-w-md border-t-4 border-yellow-400 p-8 ">
+      <div className="bg-white relative rounded-2xl shadow-lg w-full max-w-md border-t-4 border-yellow-400 p-8">
         <h2 className="text-2xl font-bold mb-6 text-center">Reset Password</h2>
 
         {message && <p className="text-yellow-500 text-sm mb-2">{message}</p>}

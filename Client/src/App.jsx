@@ -13,13 +13,14 @@ import ShippingPolicy from "./pages/ShippingPolicy";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsAndConditions from "./pages/TermsAndConditions";
 import ExchangeReturns from "./pages/ExchangeReturns";
-import Cart from "./pages/Cart";            
-import Wishlist from "./pages/Wishlist";    
+import Cart from "./pages/Cart";
+import Wishlist from "./pages/Wishlist";
 
 // Dashboard
 import Dashboard from "./pages/Dashboard";
 import Profile from "./pages/Details/Profile";
 import EditProfile from "./pages/Details/EditProfile";
+import AddressManager from "./pages/Details/AddressManager";
 import Orders from "./pages/Details/Orders";
 import TrackOrder from "./pages/Details/TrackOrder";
 import DashboardWishlist from "./pages/Details/DashboardWishlist";
@@ -49,7 +50,7 @@ function App() {
         <Route path="/cart" element={<Cart />} />
         <Route path="/wishlist" element={<Wishlist />} />
 
-        {/* ✅ Protected Dashboard */}
+        {/* Protected Dashboard */}
         <Route element={<ProtectedRoute />}>
           <Route path="/dashboard" element={<Dashboard />}>
             <Route index element={<Navigate to="profile" />} />
@@ -59,6 +60,7 @@ function App() {
             <Route path="wishlist" element={<DashboardWishlist />} />
             <Route path="cart" element={<DashboardCart />} />
             <Route path="track" element={<TrackOrder />} />
+            <Route path="address" element={<AddressManager />} />
           </Route>
         </Route>
 

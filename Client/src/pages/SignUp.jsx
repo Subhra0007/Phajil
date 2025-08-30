@@ -1,8 +1,8 @@
-// src/SignUp.jsx
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import API from "../components/axios";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
+
 export default function SignUp() {
   const [formData, setFormData] = useState({
     firstName: "",
@@ -11,14 +11,15 @@ export default function SignUp() {
     password: "",
     confirmPassword: "",
     contactNumber: "",
-    accountType: "User",
+    accountType: "user",
     otp: "",
   });
   const [error, setError] = useState("");
-  const [otpVerified, setOtpVerified] = useState(false); // ✅ new state
-  const navigate = useNavigate();
+  const [otpVerified, setOtpVerified] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const navigate = useNavigate();
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -38,7 +39,6 @@ export default function SignUp() {
     }
   };
 
-  // ✅ Verify OTP before showing password fields
   const handleVerifyOTP = async (e) => {
     e.preventDefault();
     try {
@@ -50,10 +50,9 @@ export default function SignUp() {
         email: formData.email,
         otp: formData.otp,
       });
-
       if (res.data.success) {
         alert("OTP Verified Successfully!");
-        setOtpVerified(true); // ✅ show password fields
+        setOtpVerified(true);
         setError("");
       } else {
         setError("Invalid OTP, please try again.");
@@ -69,17 +68,21 @@ export default function SignUp() {
       setError("Passwords do not match.");
       return;
     }
-
     try {
-      await API.post("/auth/signup", formData);
-      navigate("/login");
+      const res = await API.post("/auth/signup", formData);
+      if (res.data.success) {
+        alert("User registered successfully!");
+        navigate("/login");
+      } else {
+        setError(res.data.message || "Signup failed.");
+      }
     } catch (err) {
       setError(err.response?.data?.message || "Signup failed.");
     }
   };
 
   return (
-    <div className="flex items-center justify-center min-h-[80vh] bg-gray-100 ">
+    <div className="flex items-center justify-center min-h-[80vh] bg-gray-100">
       <div className="bg-white relative rounded-2xl shadow-lg w-full max-w-md border-t-4 border-yellow-400 p-8 mt-30 m-10">
         <h2 className="text-2xl font-bold mb-6 text-center">Create Account</h2>
 
@@ -128,7 +131,6 @@ export default function SignUp() {
             </button>
           </div>
 
-          {/* OTP input + Verify button */}
           <div className="flex gap-2">
             <input
               type="text"
@@ -136,7 +138,7 @@ export default function SignUp() {
               placeholder="Enter OTP"
               value={formData.otp}
               onChange={handleChange}
-              className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-yellow-400 "
+              className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-yellow-400"
             />
             <button
               type="button"
@@ -147,59 +149,54 @@ export default function SignUp() {
             </button>
           </div>
 
-          {/* ✅ Show only after OTP Verified */}
           {otpVerified && (
             <>
-             {/* ✅ Password field */}
-<label className="relative block">
-  <input
-    type={showPassword ? "text" : "password"}   // 🔹 FIX: toggle input type
-    name="password"
-    placeholder="Enter your password"
-    value={formData.password}
-    onChange={handleChange}
-    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-yellow-400"
-  />
-  <span
-    onClick={() => setShowPassword((prev) => !prev)}
-    className="absolute right-3 top-[14px] z-10 cursor-pointer"
-  >
-    {showPassword ? (
-      <AiOutlineEyeInvisible fontSize={22} fill="#555" />
-    ) : (
-      <AiOutlineEye fontSize={22} fill="#555" />
-    )}
-  </span>
-</label>
-
-{/* ✅ Confirm Password field */}
-<label className="relative block">
-  <input
-    type={showConfirmPassword ? "text" : "password"}   // 🔹 FIX: toggle input type
-    name="confirmPassword"
-    placeholder="Confirm Password"
-    value={formData.confirmPassword}
-    onChange={handleChange}
-    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-yellow-400"
-  />
-  <span
-    onClick={() => setShowConfirmPassword((prev) => !prev)}
-    className="absolute right-3 top-[14px] z-10 cursor-pointer"
-  >
-    {showConfirmPassword ? (
-      <AiOutlineEyeInvisible fontSize={22} fill="#555" />
-    ) : (
-      <AiOutlineEye fontSize={22} fill="#555" />
-    )}
-  </span>
-</label>
-
+              <label className="relative block">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  name="password"
+                  placeholder="Enter your password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                />
+                <span
+                  onClick={() => setShowPassword((prev) => !prev)}
+                  className="absolute right-3 top-[14px] z-10 cursor-pointer"
+                >
+                  {showPassword ? (
+                    <AiOutlineEyeInvisible fontSize={22} fill="#555" />
+                  ) : (
+                    <AiOutlineEye fontSize={22} fill="#555" />
+                  )}
+                </span>
+              </label>
+              <label className="relative block">
+                <input
+                  type={showConfirmPassword ? "text" : "password"}
+                  name="confirmPassword"
+                  placeholder="Confirm Password"
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                />
+                <span
+                  onClick={() => setShowConfirmPassword((prev) => !prev)}
+                  className="absolute right-3 top-[14px] z-10 cursor-pointer"
+                >
+                  {showConfirmPassword ? (
+                    <AiOutlineEyeInvisible fontSize={22} fill="#555" />
+                  ) : (
+                    <AiOutlineEye fontSize={22} fill="#555" />
+                  )}
+                </span>
+              </label>
             </>
           )}
 
           <button
             type="submit"
-            disabled={!otpVerified} // ✅ Disable until OTP verified
+            disabled={!otpVerified}
             className="w-full bg-yellow-400 hover:bg-yellow-500 transition text-black py-3 rounded-lg font-semibold shadow-md disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
           >
             Sign Up

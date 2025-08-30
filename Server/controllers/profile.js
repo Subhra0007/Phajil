@@ -1,19 +1,9 @@
-// controllers/profile.js
+//controllers/profile
 import fs from "fs";
 import User from "../models/User.js";
 import Profile from "../models/Profile.js";
 import { v2 as cloudinary } from "cloudinary";
 
-/**
- * NOTE:
- * This controller assumes express-fileupload is used with:
- *   app.use(fileUpload({ useTempFiles: true, tempFileDir: "/tmp/" }))
- * so uploaded files are available at req.files.displayPicture.tempFilePath
- */
-
-// =========================
-// GET USER DETAILS
-// =========================
 export const getUserDetails = async (req, res) => {
   try {
     const userId = req.user.id;
@@ -41,18 +31,14 @@ export const getUserDetails = async (req, res) => {
   }
 };
 
-// =========================
-// UPDATE PROFILE (only additionalDetails)
-// =========================
 export const updateProfile = async (req, res) => {
   try {
     const userId = req.user.id;
     const { additionalDetails } = req.body;
 
-    const user = await User.findById(userId);
+    const user = await User.findById(userId).populate("additionalDetails");
     if (!user) return res.status(404).json({ success: false, message: "User not found" });
 
-    // If user doesn't yet have a Profile document, create one
     if (!user.additionalDetails && additionalDetails) {
       const newProfile = await Profile.create(additionalDetails);
       user.additionalDetails = newProfile._id;
@@ -85,9 +71,6 @@ export const updateProfile = async (req, res) => {
   }
 };
 
-// =========================
-// DELETE ACCOUNT
-// =========================
 export const deleteAccount = async (req, res) => {
   try {
     const userId = req.user.id;
@@ -95,7 +78,6 @@ export const deleteAccount = async (req, res) => {
 
     if (!user) return res.status(404).json({ success: false, message: "User not found" });
 
-    // optionally delete Profile doc if present
     if (user.additionalDetails) {
       await Profile.findByIdAndDelete(user.additionalDetails).catch(() => {});
     }
@@ -107,14 +89,10 @@ export const deleteAccount = async (req, res) => {
   }
 };
 
-// =========================
-// UPDATE DISPLAY PICTURE (upload to Cloudinary)
-// =========================
 export const updateDisplayPicture = async (req, res) => {
   try {
     const userId = req.user.id;
 
-    // Ensure file uploaded via express-fileupload (useTempFiles:true)
     if (!req.files || !req.files.displayPicture) {
       return res.status(400).json({ success: false, message: "No image uploaded" });
     }
@@ -124,10 +102,8 @@ export const updateDisplayPicture = async (req, res) => {
       return res.status(400).json({ success: false, message: "Invalid uploaded file" });
     }
 
-    // Upload to Cloudinary
     const result = await cloudinary.uploader.upload(tempPath, { folder: "profile_pics" });
 
-    // Clean up temp file
     try {
       if (fs.existsSync(tempPath)) {
         fs.unlinkSync(tempPath);
@@ -136,8 +112,9 @@ export const updateDisplayPicture = async (req, res) => {
       console.warn("Failed to remove temp file", tempPath, e);
     }
 
-    // Save secure URL to user.avatar
-    const updatedUser = await User.findByIdAndUpdate(userId, { avatar: result.secure_url }, { new: true }).select("-password");
+    const updatedUser = await User.findByIdAndUpdate(userId, { avatar: result.secure_url }, { new: true })
+      .select("-password")
+      .populate("additionalDetails");
 
     const payload = {
       _id: updatedUser._id,
@@ -161,14 +138,13 @@ export const updateDisplayPicture = async (req, res) => {
   }
 };
 
-// =========================
-// REMOVE DISPLAY PICTURE (clear avatar field)
-// =========================
 export const removeDisplayPicture = async (req, res) => {
   try {
     const userId = req.user.id;
 
-    const updatedUser = await User.findByIdAndUpdate(userId, { avatar: "" }, { new: true }).select("-password");
+    const updatedUser = await User.findByIdAndUpdate(userId, { avatar: "" }, { new: true })
+      .select("-password")
+      .populate("additionalDetails");
 
     if (!updatedUser) return res.status(404).json({ success: false, message: "User not found" });
 

@@ -1,3 +1,4 @@
+// Profile component (fixed address display)
 import React, { useEffect, useState } from "react";
 import API from "../../components/axios";
 import { useNavigate } from "react-router-dom";
@@ -62,6 +63,13 @@ const Profile = () => {
       </div>
     );
   }
+
+  // Find default address or first one
+  const defaultAddress = user?.additionalDetails?.addresses?.find(addr => addr.isDefault) ||
+                         user?.additionalDetails?.addresses?.[0];
+  const addressString = defaultAddress 
+    ? `${defaultAddress.street}, ${defaultAddress.city}, ${defaultAddress.state}, ${defaultAddress.zipCode}, ${defaultAddress.country}`
+    : "N/A";
 
   return (
     <div className="flex flex-col min-h-screen bg-[#0d1117] text-white p-6">
@@ -131,7 +139,7 @@ const Profile = () => {
           </div>
           <div>
             <p className="text-sm font-semibold text-gray-400">Address</p>
-            <p className="mt-1">{user?.additionalDetails?.address || "N/A"}</p>
+            <p className="mt-1">{addressString}</p>
           </div>
         </div>
       </div>

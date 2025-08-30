@@ -1,4 +1,3 @@
-// src/pages/Details/EditProfile.jsx
 import React, { useEffect, useState } from "react";
 import API from "../../components/axios";
 import { useNavigate } from "react-router-dom";
@@ -6,16 +5,12 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 
 export default function EditProfile() {
   const navigate = useNavigate();
-
   const [namePreview, setNamePreview] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
-
   const [dateOfBirth, setDateOfBirth] = useState("");
   const [gender, setGender] = useState("");
   const [about, setAbout] = useState("");
-  const [address, setAddress] = useState("");
-
   const [avatar, setAvatar] = useState("");
 
   const load = async () => {
@@ -27,14 +22,12 @@ export default function EditProfile() {
       setNamePreview(`${u.firstName || ""} ${u.lastName || ""}`.trim());
       setEmail(u.email || "");
       setPhone(u.contactNumber || "");
-      setAvatar(u.image || "");
-
+      setAvatar(u.avatar || "");
       const ad = u.additionalDetails || {};
       const dob = ad.dateOfBirth ? String(ad.dateOfBirth).slice(0, 10) : "";
       setDateOfBirth(dob);
       setGender(ad.gender || "");
       setAbout(ad.about || "");
-      setAddress(ad.address || "");
     } catch (e) {
       console.error("Failed to load profile", e);
       alert("Failed to load profile");
@@ -52,7 +45,6 @@ export default function EditProfile() {
           dateOfBirth: dateOfBirth || null,
           gender: gender || "",
           about: about || "",
-          address: address || "",
         },
       });
       alert("Profile updated successfully");
@@ -73,7 +65,7 @@ export default function EditProfile() {
       const res = await API.put("/profile/updateDisplayPicture", data, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-      const img = res?.data?.user?.image || res?.data?.user?.avatar || "";
+      const img = res?.data?.user?.avatar || "";
       setAvatar(img);
       localStorage.setItem("userImage", img);
       window.dispatchEvent(new Event("authChange"));
@@ -86,7 +78,7 @@ export default function EditProfile() {
   const handleRemoveImage = async () => {
     try {
       const res = await API.put("/profile/removeDisplayPicture");
-      const img = res?.data?.user?.image || "";
+      const img = res?.data?.user?.avatar || "";
       setAvatar(img);
       localStorage.removeItem("userImage");
       window.dispatchEvent(new Event("authChange"));
@@ -113,13 +105,10 @@ export default function EditProfile() {
   return (
     <div className="min-h-screen bg-[#0f172a] text-white flex justify-center py-10 px-4">
       <div className="w-full max-w-3xl bg-[#1e293b] p-8 rounded-2xl shadow-lg">
-        
-        {/* Page Title */}
         <h2 className="text-2xl font-bold mb-6">Edit Profile</h2>
-        
+
         {/* Profile Picture Section */}
         <div className="mb-6">
-      
           <div className="flex items-center gap-6">
             {avatar ? (
               <img
@@ -134,21 +123,22 @@ export default function EditProfile() {
             )}
             <div>
               <p className="mb-3 font-semibold">Change Profile Picture</p>
-            <div className="flex gap-3">
-              <label className="bg-yellow-400 text-black font-semibold px-4 py-2 rounded-lg cursor-pointer">
-                Change
-                <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
-              </label>
-              <button
-                onClick={handleRemoveImage}
-                className="bg-red-500 hover:bg-red-600 px-4 py-2 rounded-lg cursor-pointer"
-              >
-                Remove
-              </button>
+              <div className="flex gap-3">
+                <label className="bg-yellow-400 text-black font-semibold px-4 py-2 rounded-lg cursor-pointer">
+                  Change
+                  <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
+                </label>
+                <button
+                  onClick={handleRemoveImage}
+                  className="bg-red-500 hover:bg-red-600 px-4 py-2 rounded-lg cursor-pointer"
+                >
+                  Remove
+                </button>
               </div>
             </div>
           </div>
         </div>
+
         {/* Profile Information */}
         <div className="space-y-6">
           {/* Readonly signup fields */}
@@ -204,17 +194,9 @@ export default function EditProfile() {
               onChange={(e) => setAbout(e.target.value)}
               className="px-4 py-3 rounded-lg bg-[#0f172a] border border-gray-600 focus:ring-2 focus:ring-yellow-400 md:col-span-2"
             />
-            <input
-              type="text"
-              placeholder="Enter Address"
-              value={address}
-              onChange={(e) => setAddress(e.target.value)}
-              className="px-4 py-3 rounded-lg bg-[#0f172a] border border-gray-600 focus:ring-2 focus:ring-yellow-400 md:col-span-2"
-            />
           </div>
 
           {/* Delete Account */}
-             {/* Delete Account */}
           <div className="bg-red-900/80 border border-red-600 p-5 rounded-lg flex gap-3 items-start">
             <RiDeleteBin6Line className="text-red-400 text-2xl mt-1" />
             <div>
@@ -233,19 +215,31 @@ export default function EditProfile() {
             </div>
           </div>
 
-
-          {/* Save / Cancel */}
-          <div className="flex justify-end gap-4">
-            <button type="button" onClick={() => navigate("/dashboard/profile")} className="px-6 py-3 bg-gray-600 hover:bg-gray-700 rounded-lg">
-              Cancel
-            </button>
+          {/* Save / Cancel / Edit Addresses */}
+          <div className="flex justify-between items-center gap-4">
             <button
               type="button"
-              onClick={save}
-              className="px-6 py-3 bg-yellow-400 text-black font-semibold rounded-lg hover:bg-yellow-500"
+              onClick={() => navigate("/dashboard/address")}
+              className="px-6 py-3 bg-blue-500 hover:bg-blue-600 rounded-lg"
             >
-              Save
+              Edit Addresses
             </button>
+            <div className="flex gap-4">
+              <button
+                type="button"
+                onClick={() => navigate("/dashboard/profile")}
+                className="px-6 py-3 bg-gray-600 hover:bg-gray-700 rounded-lg"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={save}
+                className="px-6 py-3 bg-yellow-400 text-black font-semibold rounded-lg hover:bg-yellow-500"
+              >
+                Save
+              </button>
+            </div>
           </div>
         </div>
       </div>

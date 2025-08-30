@@ -1,4 +1,4 @@
-// controllers/Auth.js
+//Controllers/Auth.js
 import bcrypt from "bcrypt";
 import User from "../models/User.js";
 import OTP from "../models/OTP.js";
@@ -10,9 +10,12 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-// ===============================
-// Signup Controller
-// ===============================
+// Email validation function
+const isValidEmail = (email) => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+};
+
 export const signup = async (req, res) => {
   try {
     const {
@@ -26,8 +29,14 @@ export const signup = async (req, res) => {
       otp,
     } = req.body;
 
+    console.log("Received signup data:", { firstName, lastName, email, password: "****", confirmPassword: "****", contactNumber, otp, accountType });
+
     if (!firstName || !lastName || !email || !password || !confirmPassword || !otp || !contactNumber) {
-      return res.status(403).send({ success: false, message: "All Fields are required" });
+      return res.status(403).json({ success: false, message: "All fields are required" });
+    }
+
+    if (!isValidEmail(email)) {
+      return res.status(400).json({ success: false, message: "Please enter a valid email address" });
     }
 
     if (password !== confirmPassword) {
@@ -35,33 +44,51 @@ export const signup = async (req, res) => {
     }
 
     const existingUser = await User.findOne({ email });
-    if (existingUser) return res.status(400).json({ success: false, message: "User already exists. Please sign in." });
+    if (existingUser) {
+      return res.status(400).json({ success: false, message: "User already exists. Please sign in." });
+    }
 
     const response = await OTP.find({ email }).sort({ createdAt: -1 }).limit(1);
-    if (response.length === 0 || otp !== response[0].otp) {
+    if (response.length === 0) {
+      return res.status(400).json({ success: false, message: "OTP not found or expired" });
+    }
+    const latestOTP = response[0];
+    console.log("Latest OTP from DB:", latestOTP.otp, "Received OTP:", otp);
+    if (latestOTP.otp !== otp) {
       return res.status(400).json({ success: false, message: "The OTP is not valid" });
+    }
+    const tenMinutesAgo = new Date(Date.now() - 10 * 60 * 1000);
+    if (latestOTP.createdAt < tenMinutesAgo) {
+      return res.status(400).json({ success: false, message: "OTP has expired" });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Profile now holds only extra details (no contactNumber)
-    const profileDetails = await Profile.create({
-      gender: null,
-      dateOfBirth: null,
-      about: null,
-      address: null,
-    });
+    let profileDetails;
+    try {
+      profileDetails = await Profile.create({
+        gender: null,
+        dateOfBirth: null,
+        about: null,
+        addresses: [],
+      });
+      console.log("Profile created:", profileDetails._id);
+    } catch (profileErr) {
+      console.error("Profile creation error:", profileErr.message, profileErr.stack);
+      return res.status(500).json({ success: false, message: "Failed to create profile" });
+    }
 
     const user = await User.create({
       firstName,
       lastName,
       email,
-      contactNumber, // ✅ stored in User
+      contactNumber,
       password: hashedPassword,
       accountType,
       additionalDetails: profileDetails._id,
       avatar: "",
     });
+    console.log("User created:", user._id);
 
     return res.status(200).json({
       success: true,
@@ -76,14 +103,11 @@ export const signup = async (req, res) => {
       message: "User registered successfully",
     });
   } catch (error) {
-    console.error(error);
+    console.error("Signup error:", error.message, error.stack);
     return res.status(500).json({ success: false, message: "User cannot be registered. Please try again." });
   }
 };
 
-// ===============================
-// Verify OTP Controller
-// ===============================
 export const verifyOTP = async (req, res) => {
   try {
     const { email, otp } = req.body;
@@ -92,35 +116,38 @@ export const verifyOTP = async (req, res) => {
       return res.status(400).json({ success: false, message: "Email and OTP are required" });
     }
 
-    // Get latest OTP for this email
     const response = await OTP.find({ email }).sort({ createdAt: -1 }).limit(1);
-
     if (response.length === 0) {
       return res.status(400).json({ success: false, message: "OTP not found or expired" });
     }
 
-    if (response[0].otp !== otp) {
+    const latestOTP = response[0];
+    if (latestOTP.otp !== otp) {
       return res.status(400).json({ success: false, message: "Invalid OTP" });
+    }
+    const tenMinutesAgo = new Date(Date.now() - 10 * 60 * 1000);
+    if (latestOTP.createdAt < tenMinutesAgo) {
+      return res.status(400).json({ success: false, message: "OTP has expired" });
     }
 
     return res.status(200).json({ success: true, message: "OTP verified successfully" });
-
   } catch (error) {
-    console.error("Error verifying OTP", error);
+    console.error("Error verifying OTP:", error.message, error.stack);
     return res.status(500).json({ success: false, message: "Error verifying OTP" });
   }
 };
 
-// ===============================
-// Login Controller
-// ===============================
 export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
-    if (!email || !password) return res.status(400).json({ success: false, message: "Please Fill up All the Required Fields" });
+    if (!email || !password) {
+      return res.status(400).json({ success: false, message: "Please Fill up All the Required Fields" });
+    }
 
     const user = await User.findOne({ email }).populate("additionalDetails");
-    if (!user) return res.status(401).json({ success: false, message: "User is not Registered. Please SignUp." });
+    if (!user) {
+      return res.status(401).json({ success: false, message: "User is not Registered. Please SignUp." });
+    }
 
     if (await bcrypt.compare(password, user.password)) {
       const token = jwt.sign(
@@ -128,6 +155,9 @@ export const login = async (req, res) => {
         process.env.JWT_SECRET,
         { expiresIn: "24h" }
       );
+      if (!token) {
+        throw new Error("Failed to generate token");
+      }
 
       user.token = token;
       user.password = undefined;
@@ -151,19 +181,22 @@ export const login = async (req, res) => {
       return res.status(401).json({ success: false, message: "Password is incorrect" });
     }
   } catch (error) {
-    console.error(error);
+    console.error("Login error:", error.message, error.stack);
     return res.status(500).json({ success: false, message: "Login Failure Please Try Again" });
   }
 };
 
-// ===============================
-// Send OTP Controller
-// ===============================
 export const sendotp = async (req, res) => {
   try {
     const { email } = req.body;
+    if (!isValidEmail(email)) {
+      return res.status(400).json({ success: false, message: "Please enter a valid email address" });
+    }
+
     const checkUserPresent = await User.findOne({ email });
-    if (checkUserPresent) return res.status(401).json({ success: false, message: "User is Already Registered" });
+    if (checkUserPresent) {
+      return res.status(401).json({ success: false, message: "User is Already Registered" });
+    }
 
     let otp = otpGenerator.generate(6, { upperCaseAlphabets: false, lowerCaseAlphabets: false, specialChars: false });
     let result = await OTP.findOne({ otp });
@@ -173,11 +206,11 @@ export const sendotp = async (req, res) => {
     }
 
     await OTP.create({ email, otp });
-
+    console.log("OTP generated and saved:", otp);
     res.status(200).json({ success: true, message: "OTP Sent Successfully", otp });
   } catch (error) {
-    console.log(error.message);
-    return res.status(500).json({ success: false, error: error.message });
+    console.error("Send OTP error:", error.message, error.stack);
+    return res.status(500).json({ success: false, message: error.message });
   }
 };
 

@@ -1,4 +1,3 @@
-// models/OTP.js
 import mongoose from "mongoose";
 import mailSender from "../utils/mailSender.js";
 import emailTemplate from "../mail/templates/emailVerificationTemplate.js";
@@ -19,14 +18,14 @@ async function sendVerificationEmail(email, otp) {
     );
     console.log("Email sent successfully: ", mailResponse.response);
   } catch (error) {
-    console.log("Error occurred while sending email: ", error);
+    console.error("Error occurred while sending email: ", error);
     throw error;
   }
 }
 
 // Pre-save middleware
 OTPSchema.pre("save", async function (next) {
-  console.log("New document saved to the database");
+  console.log("New OTP document saved to the database");
   if (this.isNew) {
     await sendVerificationEmail(this.email, this.otp);
   }

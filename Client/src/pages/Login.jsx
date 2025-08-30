@@ -1,16 +1,14 @@
-//src/pages/Login.jsx
-// src/pages/Login.jsx
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import API from "../components/axios";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 
-
 export default function Login() {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
-  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -20,6 +18,7 @@ export default function Login() {
     try {
       const res = await API.post("/auth/login", formData);
       localStorage.setItem("token", res.data.token);
+      window.dispatchEvent(new Event("authChange"));
       navigate("/dashboard/profile");
     } catch (err) {
       setError(err.response?.data?.message || "Login failed");
@@ -42,28 +41,27 @@ export default function Login() {
             onChange={handleChange}
             className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-yellow-400"
           />
-        <label className="relative block">
-  <input
-    type={showPassword ? "text" : "password"}   // <-- fixed here
-    name="password"
-    placeholder="Enter your password"
-    value={formData.password}
-    onChange={handleChange}
-    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-yellow-400"
-  />
-  <span
-    onClick={() => setShowPassword((prev) => !prev)}
-    className="absolute right-3 top-[14px] z-10 cursor-pointer"
-  >
-    {showPassword ? (
-      <AiOutlineEyeInvisible fontSize={22} fill="#555" />
-    ) : (
-      <AiOutlineEye fontSize={22} fill="#555" />
-    )}
-  </span>
-</label>
+          <label className="relative block">
+            <input
+              type={showPassword ? "text" : "password"}
+              name="password"
+              placeholder="Enter your password"
+              value={formData.password}
+              onChange={handleChange}
+              className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-yellow-400"
+            />
+            <span
+              onClick={() => setShowPassword((prev) => !prev)}
+              className="absolute right-3 top-[14px] z-10 cursor-pointer"
+            >
+              {showPassword ? (
+                <AiOutlineEyeInvisible fontSize={22} fill="#555" />
+              ) : (
+                <AiOutlineEye fontSize={22} fill="#555" />
+              )}
+            </span>
+          </label>
 
-          {/* Forgot Password link */}
           <div className="text-right">
             <Link
               to="/forgot-password"
