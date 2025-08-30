@@ -7,10 +7,20 @@ export default function Login() {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [isPasswordValid, setIsPasswordValid] = useState(false);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+    if (name === "password") {
+      const hasLowerCase = /[a-z]/.test(value);
+      const hasUpperCase = /[A-Z]/.test(value);
+      const hasNumber = /[0-9]/.test(value);
+      const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(value);
+      const isLongEnough = value.length >= 8;
+      setIsPasswordValid(hasLowerCase && hasUpperCase && hasNumber && hasSpecial && isLongEnough);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -31,6 +41,12 @@ export default function Login() {
         <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
 
         {error && <p className="text-red-500 text-sm mb-3">{error}</p>}
+        <p className="text-sm text-gray-600 mb-4">
+          Password must contain at least 1 uppercase, 1 lowercase, 1 number, 1 special character, and be at least 8 characters long.
+        </p>
+        {formData.password && !isPasswordValid && (
+          <p className="text-red-500 text-sm mb-3">Password does not meet the requirements.</p>
+        )}
 
         <form className="space-y-4" onSubmit={handleSubmit}>
           <input
@@ -73,7 +89,8 @@ export default function Login() {
 
           <button
             type="submit"
-            className="w-full bg-yellow-400 hover:bg-yellow-500 transition text-black py-3 rounded-lg font-semibold shadow-md cursor-pointer"
+            disabled={!isPasswordValid}
+            className="w-full bg-yellow-400 hover:bg-yellow-500 transition text-black py-3 rounded-lg font-semibold shadow-md cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Login
           </button>

@@ -18,10 +18,20 @@ export default function SignUp() {
   const [otpVerified, setOtpVerified] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [isPasswordValid, setIsPasswordValid] = useState(false);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+    if (name === "password" || name === "confirmPassword") {
+      const hasLowerCase = /[a-z]/.test(value);
+      const hasUpperCase = /[A-Z]/.test(value);
+      const hasNumber = /[0-9]/.test(value);
+      const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(value);
+      const isLongEnough = value.length >= 8;
+      setIsPasswordValid(hasLowerCase && hasUpperCase && hasNumber && hasSpecial && isLongEnough);
+    }
   };
 
   const handleSendOTP = async (e) => {
@@ -149,8 +159,16 @@ export default function SignUp() {
             </button>
           </div>
 
+          {/* {!otpVerified && (
+            <p className="text-sm text-gray-600">
+              Password must contain at least 1 uppercase, 1 lowercase, 1 number, 1 special character, and be at least 8 characters long.
+            </p>
+          )} */}
           {otpVerified && (
             <>
+             <p className="text-sm text-gray-600">
+              Password must contain at least 1 uppercase, 1 lowercase, 1 number, 1 special character, and be at least 8 characters long.
+            </p>
               <label className="relative block">
                 <input
                   type={showPassword ? "text" : "password"}
@@ -191,12 +209,15 @@ export default function SignUp() {
                   )}
                 </span>
               </label>
+              {formData.password && !isPasswordValid && (
+                <p className="text-red-500 text-sm">Password does not meet the requirements.</p>
+              )}
             </>
           )}
 
           <button
             type="submit"
-            disabled={!otpVerified}
+            disabled={!otpVerified || !isPasswordValid || formData.password !== formData.confirmPassword}
             className="w-full bg-yellow-400 hover:bg-yellow-500 transition text-black py-3 rounded-lg font-semibold shadow-md disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
           >
             Sign Up

@@ -37,6 +37,9 @@ const testimonials = [
 export default function TestimonialSlider() {
   return (
     <section className="bg-white py-16 text-center">
+      <h2 className="text-4xl font-bold text-center mb-12 text-black mt-5">
+          What <span className="text-yellow-500">People</span> Say About Us
+      </h2>
       <div className="max-w-6xl mx-auto px-6">
         <Swiper
           modules={[Navigation, Autoplay]}

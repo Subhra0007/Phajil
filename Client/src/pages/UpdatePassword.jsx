@@ -19,14 +19,24 @@ export default function UpdatePassword() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [isPasswordValid, setIsPasswordValid] = useState(false);
 
   const { password, confirmPassword } = formData;
 
   const handleOnChange = (e) => {
+    const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [e.target.name]: e.target.value,
+      [name]: value,
     }));
+    if (name === "password" || name === "confirmPassword") {
+      const hasLowerCase = /[a-z]/.test(value);
+      const hasUpperCase = /[A-Z]/.test(value);
+      const hasNumber = /[0-9]/.test(value);
+      const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(value);
+      const isLongEnough = value.length >= 8;
+      setIsPasswordValid(hasLowerCase && hasUpperCase && hasNumber && hasSpecial && isLongEnough);
+    }
   };
 
   const handleOnSubmit = async (e) => {
@@ -70,6 +80,12 @@ export default function UpdatePassword() {
 
           {error && <p className="text-red-400 mb-2 text-sm">{error}</p>}
           {success && <p className="text-yellow-500 mb-2 text-sm">{success}</p>}
+          <p className="text-sm text-gray-600 mb-4">
+            Password must contain at least 1 uppercase, 1 lowercase, 1 number, 1 special character, and be at least 8 characters long.
+          </p>
+          {password && !isPasswordValid && (
+            <p className="text-red-500 text-sm mb-3">Password does not meet the requirements.</p>
+          )}
 
           <form onSubmit={handleOnSubmit} className="space-y-4">
             {/* Password Input */}
@@ -120,7 +136,8 @@ export default function UpdatePassword() {
 
             <button
               type="submit"
-              className="w-full bg-yellow-400 hover:bg-yellow-500 transition text-black py-3 rounded-lg font-semibold shadow-md mt-4"
+              disabled={!isPasswordValid || password !== confirmPassword}
+              className="w-full bg-yellow-400 hover:bg-yellow-500 transition text-black py-3 rounded-lg font-semibold shadow-md mt-4 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Reset Password
             </button>
