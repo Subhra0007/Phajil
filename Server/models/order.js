@@ -1,4 +1,4 @@
-// models/order.js
+// models/Order.js
 import mongoose from "mongoose";
 
 const orderSchema = new mongoose.Schema(
@@ -14,12 +14,33 @@ const orderSchema = new mongoose.Schema(
     totalAmount: { type: Number, required: true },
     status: {
       type: String,
-      enum: ["pending", "shipped", "delivered", "cancelled"],
+      enum: ["pending", "processing", "shipped", "delivered", "cancelled", "returned"],
       default: "pending",
     },
+    paymentMethod: {
+      type: String,
+      enum: ["cod", "card", "upi", "netbanking"],
+      default: "cod",
+    },
+    paymentStatus: {
+      type: String,
+      enum: ["pending", "paid", "failed", "refunded"],
+      default: "pending",
+    },
+    deliveryAddress: {
+      label: { type: String },
+      street: { type: String },
+      city: { type: String },
+      state: { type: String },
+      zipCode: { type: String },
+      country: { type: String },
+    },
+    expectedDeliveryDate: { type: Date },
+    trackingId: { type: String },
+    returnEligible: { type: Boolean, default: true },
+    returnExpiryDate: { type: Date },
   },
   { timestamps: true }
 );
 
-const Order = mongoose.models.order || mongoose.model("order", orderSchema);
-export default Order;
+export default mongoose.models.Order || mongoose.model("Order", orderSchema);

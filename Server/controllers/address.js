@@ -1,4 +1,4 @@
-// controllers/address.js (fixed updateAddress)
+// controllers/address.js 
 import User from "../models/User.js";
 import Profile from "../models/Profile.js";
 import mongoose from "mongoose";

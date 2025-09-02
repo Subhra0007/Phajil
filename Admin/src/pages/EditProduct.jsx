@@ -1,30 +1,62 @@
-//pages/AddProduct.jsx
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+//pages/EditProduct.jsx
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import API from "../api/axios";
 
-export default function AddProduct() {
+export default function EditProduct() {
+  const { id } = useParams();
   const [form, setForm] = useState({
     type: "",
     images: "",
     price: "",
-    originalPrice: "", // New field for original price
+    originalPrice: "",
     discountedPercentage: "",
     stock: "",
     soldQuantity: "",
     category: "",
     badge: false,
     isAvailable: true,
-    offer: false, // Indicates sale status
+    offer: false,
     description: "",
     tags: "",
     title: "",
-    sizes: [], // Array for multiple sizes
-    colors: [], // Array for multiple colors
+    sizes: [],
+    colors: [],
   });
   const [images, setImages] = useState([]);
   const [error, setError] = useState("");
   const navigate = useNavigate();
+
+  useEffect(() => {
+    fetchProduct();
+  }, []);
+
+  const fetchProduct = async () => {
+    try {
+      const res = await API.get(`/admin/products/${id}`);
+      const p = res.data.data;
+      setForm({
+        type: p.type || "",
+        images: p.images.join(",") || "",
+        price: p.price || "",
+        originalPrice: p.originalPrice || "",
+        discountedPercentage: p.discountedPercentage || "",
+        stock: p.stock || "",
+        soldQuantity: p.soldQuantity || "",
+        category: p.category || "",
+        badge: p.badge || false,
+        isAvailable: p.isAvailable || true,
+        offer: p.offer || false,
+        description: p.description || "",
+        tags: p.tags ? p.tags.join(",") : "",
+        title: p.title || "",
+        sizes: p.sizes || [],
+        colors: p.colors || [],
+      });
+    } catch (err) {
+      setError(err.response?.data?.message || "Failed to load product");
+    }
+  };
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -42,18 +74,18 @@ export default function AddProduct() {
     Object.keys(form).forEach((key) => formData.append(key, Array.isArray(form[key]) ? form[key].join(",") : form[key]));
     images.forEach((img) => formData.append("images", img));
     try {
-      await API.post("/admin/products", formData, {
+      await API.put(`/admin/products/${id}`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       navigate("/products");
     } catch (err) {
-      setError(err.response?.data?.message || "Failed to add product");
+      setError(err.response?.data?.message || "Failed to update product");
     }
   };
 
   return (
     <div className="p-6 max-w-3xl mx-auto">
-      <h1 className="text-3xl font-bold mb-6">Add Product</h1>
+      <h1 className="text-3xl font-bold mb-6">Edit Product</h1>
       {error && <p className="text-red-500 mb-4">{error}</p>}
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
@@ -126,7 +158,6 @@ export default function AddProduct() {
             <option value="Women">Women</option>
             <option value="New Arrival">New Arrival</option>
             <option value="Trending">Trending</option>
-          
           </select>
         </div>
         <div>
@@ -230,7 +261,7 @@ export default function AddProduct() {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium">Images</label>
+          <label className="block text-sm font-medium">Add New Images</label>
           <input
             type="file"
             multiple
@@ -242,7 +273,7 @@ export default function AddProduct() {
           type="submit"
           className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
         >
-          Save Product
+          Update Product
         </button>
       </form>
     </div>

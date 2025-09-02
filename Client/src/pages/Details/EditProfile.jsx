@@ -1,3 +1,4 @@
+//pages/Details/EditProfile.jsx
 import React, { useEffect, useState } from "react";
 import API from "../../components/axios";
 import { useNavigate } from "react-router-dom";

@@ -149,11 +149,36 @@ export default function Navbar() {
 
         {/* Sidebar Menu */}
         <ul className="flex flex-col space-y-4 mt-6 px-6 text-lg font-medium">
-          <li className="hover:text-red-500 cursor-pointer">FELUDA</li>
+          {/* <li className="hover:text-red-500 cursor-pointer">FELUDA</li>
           <li className="hover:text-red-500 cursor-pointer">NOSTALGIC KOLKATA</li>
           <li className="hover:text-red-500 cursor-pointer">UNISEX</li>
           <li className="hover:text-red-500 cursor-pointer">WOMEN</li>
-          <li className="hover:text-red-500 cursor-pointer">ORDER TRACKING</li>
+          <li className="hover:text-red-500 cursor-pointer">ORDER TRACKING</li> */}
+           <li>
+            <Link to="/feluda" className="hover:text-red-500 cursor-pointer" onClick={() => setIsOpen(false)}>
+             FELUDA
+            </Link>
+          </li>
+           <li>
+            <Link to="/kolkata" className="hover:text-red-500 cursor-pointer" onClick={() => setIsOpen(false)}>
+              NOSTALGIC KOLKATA
+            </Link>
+          </li>
+           <li>
+            <Link to="/unisex" className="hover:text-red-500 cursor-pointer" onClick={() => setIsOpen(false)}>
+              UNISEX
+            </Link>
+          </li>
+           <li>
+            <Link to="/girls" className="hover:text-red-500 cursor-pointer" onClick={() => setIsOpen(false)}>
+              WOMEN
+            </Link>
+          </li>
+           <li>
+            <Link to="" className="hover:text-red-500 cursor-pointer" onClick={() => setIsOpen(false)}>
+             ORDER TRACKING
+            </Link>
+          </li>
           <li>
             <Link to="/about" className="hover:text-red-500 cursor-pointer" onClick={() => setIsOpen(false)}>
               ABOUT US

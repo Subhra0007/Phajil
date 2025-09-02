@@ -1,3 +1,4 @@
+//pages/HomeSection.jsx
 import Hero from "../components/Home/Hero";
 import Categories from "../components/Home/Categories";
 import Features from "../components/Home/Features";

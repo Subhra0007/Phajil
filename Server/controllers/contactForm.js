@@ -1,4 +1,4 @@
-//controllers/contactForm
+//controllers/contactForm.js
 import nodemailer from "nodemailer";
 import dotenv from "dotenv";
 

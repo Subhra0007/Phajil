@@ -15,6 +15,11 @@ import TermsAndConditions from "./pages/TermsAndConditions";
 import ExchangeReturns from "./pages/ExchangeReturns";
 import Cart from "./pages/Cart";
 import Wishlist from "./pages/Wishlist";
+import Feluda from "./pages/Feluda";
+import Kolkata from "./pages/Kolkata";
+import Unisex from "./pages/Unisex"
+import Girls from "./pages/Girls";
+import CategoryProducts from "./components/CategoryProducts";
 
 // Dashboard
 import Dashboard from "./pages/Dashboard";
@@ -49,7 +54,11 @@ function App() {
         <Route path="/exchange-returns" element={<ExchangeReturns />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/wishlist" element={<Wishlist />} />
-
+        <Route path="/feluda" element={<Feluda />} />
+        <Route path="/kolkata" element={<Kolkata />} />
+        <Route path="/unisex" element={<Unisex />} />
+        <Route path="/girls" element={<Girls />} />
+        <Route path="/category/:category" element={<CategoryProducts />} />
         {/* Protected Dashboard */}
         <Route element={<ProtectedRoute />}>
           <Route path="/dashboard" element={<Dashboard />}>

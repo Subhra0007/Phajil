@@ -1,4 +1,4 @@
-// Profile component (fixed address display)
+// pages/Details/Profile
 import React, { useEffect, useState } from "react";
 import API from "../../components/axios";
 import { useNavigate } from "react-router-dom";
@@ -126,7 +126,7 @@ const Profile = () => {
             <p className="mt-1">
               {user?.additionalDetails?.dateOfBirth
                 ? user.additionalDetails.dateOfBirth.split("T")[0]
-                : "N/A"}
+                : " "}
             </p>
           </div>
           <div>

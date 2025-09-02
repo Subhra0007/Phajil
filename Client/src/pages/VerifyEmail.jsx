@@ -1,3 +1,4 @@
+//pages/VerifyEmail.jsx
 import { useEffect, useState } from "react";
 import OtpInput from "react-otp-input";
 import { Link, useNavigate } from "react-router-dom";

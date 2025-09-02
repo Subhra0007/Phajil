@@ -1,4 +1,4 @@
-//Controllers/Auth.js
+//controllers/Auth.js
 import bcrypt from "bcrypt";
 import User from "../models/User.js";
 import OTP from "../models/OTP.js";
@@ -10,9 +10,10 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-// Email validation function
+//---------------------User----------------------------
+// Improved email validation using a stricter regex
 const isValidEmail = (email) => {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$/;
   return emailRegex.test(email);
 };
 
@@ -62,8 +63,6 @@ export const signup = async (req, res) => {
       return res.status(400).json({ success: false, message: "OTP has expired" });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-
     let profileDetails;
     try {
       profileDetails = await Profile.create({
@@ -83,7 +82,7 @@ export const signup = async (req, res) => {
       lastName,
       email,
       contactNumber,
-      password: hashedPassword,
+      password, // Handled by schema pre-save hook
       accountType,
       additionalDetails: profileDetails._id,
       avatar: "",
@@ -146,7 +145,7 @@ export const login = async (req, res) => {
 
     const user = await User.findOne({ email }).populate("additionalDetails");
     if (!user) {
-      return res.status(401).json({ success: false, message: "User is not Registered. Please SignUp." });
+      return res.status(401).json({ success: false, message: "User not registered" });
     }
 
     if (await bcrypt.compare(password, user.password)) {
@@ -159,7 +158,7 @@ export const login = async (req, res) => {
         throw new Error("Failed to generate token");
       }
 
-      user.token = token;
+      // Avoid updating token in document (security risk)
       user.password = undefined;
 
       const options = { expires: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000), httpOnly: true };
@@ -200,9 +199,15 @@ export const sendotp = async (req, res) => {
 
     let otp = otpGenerator.generate(6, { upperCaseAlphabets: false, lowerCaseAlphabets: false, specialChars: false });
     let result = await OTP.findOne({ otp });
-    while (result) {
+    let attempts = 0;
+    const maxAttempts = 5;
+    while (result && attempts < maxAttempts) {
       otp = otpGenerator.generate(6, { upperCaseAlphabets: false, lowerCaseAlphabets: false, specialChars: false });
       result = await OTP.findOne({ otp });
+      attempts++;
+    }
+    if (attempts >= maxAttempts) {
+      return res.status(500).json({ success: false, message: "Unable to generate unique OTP" });
     }
 
     await OTP.create({ email, otp });
@@ -214,12 +219,12 @@ export const sendotp = async (req, res) => {
   }
 };
 
-// ===============================
-// Change Password Controller
-// ===============================
 export const changePassword = async (req, res) => {
   try {
     const userDetails = await User.findById(req.user.id);
+    if (!userDetails) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
     const { oldPassword, newPassword } = req.body;
 
     const isPasswordMatch = await bcrypt.compare(oldPassword, userDetails.password);
@@ -230,7 +235,9 @@ export const changePassword = async (req, res) => {
 
     return res.status(200).json({ success: true, message: "Password updated successfully" });
   } catch (error) {
-    console.error(error);
+    console.error("Change password error:", error.message, error.stack);
     return res.status(500).json({ success: false, message: "Error occurred while updating password", error: error.message });
   }
 };
+
+

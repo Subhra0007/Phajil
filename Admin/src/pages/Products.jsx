@@ -1,39 +1,89 @@
-import { useEffect, useState } from "react";
+//pages/Products.jsx
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import API from "../api/axios";
-import Navbar from "../components/Navbar";
-import { Link } from "react-router-dom";
 
 export default function Products() {
   const [products, setProducts] = useState([]);
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
-    API.get("/admin/products").then((res) => setProducts(res.data.data));
+    fetchProducts();
   }, []);
 
+  const fetchProducts = async () => {
+    try {
+      const res = await API.get("/admin/products");
+      setProducts(res.data.data);
+    } catch (err) {
+      setError(err.response?.data?.message || "Failed to load products");
+    }
+  };
+
+  const deleteProduct = async (id) => {
+    if (window.confirm("Are you sure you want to delete this product?")) {
+      try {
+        await API.delete(`/admin/products/${id}`);
+        fetchProducts();
+      } catch (err) {
+        setError(err.response?.data?.message || "Failed to delete product");
+      }
+    }
+  };
+
   return (
-    <div>
-      <Navbar />
-      <div className="p-6">
-        <div className="flex justify-between">
-          <h2 className="text-xl font-bold">Products</h2>
-          <Link to="/add-product" className="bg-green-600 text-white px-3 py-1 rounded">
-            + Add Product
-          </Link>
-        </div>
-        <table className="w-full mt-4 border">
-          <thead>
-            <tr className="bg-gray-200">
-              <th className="p-2">Title</th>
-              <th className="p-2">Price</th>
-              <th className="p-2">Stock</th>
+    <div className="p-6 max-w-7xl mx-auto">
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-3xl font-bold">Products</h1>
+        <button
+          onClick={() => navigate("/add-product")}
+          className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
+        >
+          Add Product
+        </button>
+      </div>
+      {error && <p className="text-red-500 mb-4">{error}</p>}
+      <div className="bg-white shadow rounded-lg overflow-x-auto">
+        <table className="min-w-full divide-y divide-gray-200">
+          <thead className="bg-gray-50">
+            <tr>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Original Price</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Stock</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sizes</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Colors</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody className="bg-white divide-y divide-gray-200">
             {products.map((p) => (
-              <tr key={p._id} className="border-t">
-                <td className="p-2">{p.title}</td>
-                <td className="p-2">₹{p.price}</td>
-                <td className="p-2">{p.stock}</td>
+              <tr key={p._id}>
+                <td className="px-6 py-4 whitespace-nowrap">{p.title}</td>
+                <td className="px-6 py-4 whitespace-nowrap">₹{p.originalPrice || "N/A"}</td>
+                <td className="px-6 py-4 whitespace-nowrap">₹{p.price}</td>
+                <td className="px-6 py-4 whitespace-nowrap">{p.stock}</td>
+                <td className="px-6 py-4 whitespace-nowrap">{p.category}</td>
+                <td className="px-6 py-4 whitespace-nowrap">{p.sizes.join(", ") || "N/A"}</td>
+                <td className="px-6 py-4 whitespace-nowrap">{p.colors.join(", ") || "N/A"}</td>
+                <td className="px-6 py-4 whitespace-nowrap">{p.isAvailable ? "Active" : "Inactive"}</td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <button
+                    onClick={() => navigate(`/edit-product/${p._id}`)}
+                    className="text-blue-600 hover:text-blue-800 mr-2"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => deleteProduct(p._id)}
+                    className="text-red-600 hover:text-red-800"
+                  >
+                    Delete
+                  </button>
+                </td>
               </tr>
             ))}
           </tbody>

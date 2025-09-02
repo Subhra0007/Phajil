@@ -1,3 +1,4 @@
+//models/OTP.js
 import mongoose from "mongoose";
 import mailSender from "../utils/mailSender.js";
 import emailTemplate from "../mail/templates/emailVerificationTemplate.js";

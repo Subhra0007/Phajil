@@ -1,8 +1,7 @@
-//routes/user.js
 import express from "express";
-import { login, signup, sendotp, verifyOTP, changePassword } from "../controllers/Auth.js";
+import { login, signup, sendotp, verifyOTP, changePassword  } from "../controllers/Auth.js";
 import { resetPasswordToken, resetPassword } from "../controllers/resetPassword.js";
-import { auth } from "../middlewares/auth.js";
+import { auth } from "../middlewares/auth.js"; // Corrected path
 
 const router = express.Router();
 

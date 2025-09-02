@@ -1,13 +1,33 @@
-//pages/AddBlog
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+//pages/EditBlog
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import API from "../api/axios";
 
-export default function AddBlog() {
+export default function EditBlog() {
+  const { id } = useParams();
   const [form, setForm] = useState({ title: "", slug: "", content: "", published: false });
   const [cover, setCover] = useState(null);
   const [error, setError] = useState("");
   const navigate = useNavigate();
+
+  useEffect(() => {
+    fetchBlog();
+  }, []);
+
+  const fetchBlog = async () => {
+    try {
+      const res = await API.get(`/admin/blogs/${id}`);
+      const b = res.data.data;
+      setForm({
+        title: b.title,
+        slug: b.slug,
+        content: b.content,
+        published: b.published,
+      });
+    } catch (err) {
+      setError(err.response?.data?.message || "Failed to load blog");
+    }
+  };
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -20,18 +40,18 @@ export default function AddBlog() {
     Object.keys(form).forEach((key) => formData.append(key, form[key]));
     if (cover) formData.append("cover", cover);
     try {
-      await API.post("/admin/blogs", formData, {
+      await API.put(`/admin/blogs/${id}`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       navigate("/blogs");
     } catch (err) {
-      setError(err.response?.data?.message || "Failed to add blog");
+      setError(err.response?.data?.message || "Failed to update blog");
     }
   };
 
   return (
     <div className="p-6 max-w-3xl mx-auto">
-      <h1 className="text-3xl font-bold mb-6">Add Blog</h1>
+      <h1 className="text-3xl font-bold mb-6">Edit Blog</h1>
       {error && <p className="text-red-500 mb-4">{error}</p>}
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
@@ -89,7 +109,7 @@ export default function AddBlog() {
           type="submit"
           className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
         >
-          Save Blog
+          Update Blog
         </button>
       </form>
     </div>

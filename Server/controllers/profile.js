@@ -1,4 +1,4 @@
-//controllers/profile
+//controllers/profile.js
 import fs from "fs";
 import User from "../models/User.js";
 import Profile from "../models/Profile.js";

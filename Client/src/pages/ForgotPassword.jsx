@@ -1,4 +1,4 @@
-//controllers/ForgotPassword.jsx
+//pages/ForgotPassword.jsx
 import { useState } from "react";
 import API from "../components/axios";
 
