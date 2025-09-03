@@ -1,4 +1,4 @@
-//pages/Products.jsx
+// Admin/pages/Products.jsx
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import API from "../api/axios";
@@ -15,21 +15,35 @@ export default function Products() {
   const fetchProducts = async () => {
     try {
       const res = await API.get("/admin/products");
-      setProducts(res.data.data);
+      setProducts(res.data.data || []);
     } catch (err) {
-      setError(err.response?.data?.message || "Failed to load products");
+      setError("Failed to load products");
     }
   };
 
   const deleteProduct = async (id) => {
-    if (window.confirm("Are you sure you want to delete this product?")) {
+    if (window.confirm("Are you sure?")) {
       try {
         await API.delete(`/admin/products/${id}`);
         fetchProducts();
       } catch (err) {
-        setError(err.response?.data?.message || "Failed to delete product");
+        setError("Failed to delete");
       }
     }
+  };
+
+  // Flatten color/size/stock rows for a product
+  const rowsFor = (prod) => {
+    const out = [];
+    (prod.variants || []).forEach((v) => {
+      (v.sizes || []).forEach((s) => {
+        out.push({
+          combo: `${v.color || "-"}, ${s.size || "-"}`,
+          stock: Number(s.stock || 0),
+        });
+      });
+    });
+    return out;
   };
 
   return (
@@ -38,7 +52,7 @@ export default function Products() {
         <h1 className="text-3xl font-bold">Products</h1>
         <button
           onClick={() => navigate("/add-product")}
-          className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
+          className="bg-blue-600 text-white px-4 py-2 rounded-md"
         >
           Add Product
         </button>
@@ -48,38 +62,47 @@ export default function Products() {
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Original Price</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Stock</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sizes</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Colors</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Title</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Category</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Price</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Color & Size — Stock</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {products.map((p) => (
-              <tr key={p._id}>
-                <td className="px-6 py-4 whitespace-nowrap">{p.title}</td>
-                <td className="px-6 py-4 whitespace-nowrap">₹{p.originalPrice || "N/A"}</td>
-                <td className="px-6 py-4 whitespace-nowrap">₹{p.price}</td>
-                <td className="px-6 py-4 whitespace-nowrap">{p.stock}</td>
-                <td className="px-6 py-4 whitespace-nowrap">{p.category}</td>
-                <td className="px-6 py-4 whitespace-nowrap">{p.sizes.join(", ") || "N/A"}</td>
-                <td className="px-6 py-4 whitespace-nowrap">{p.colors.join(", ") || "N/A"}</td>
-                <td className="px-6 py-4 whitespace-nowrap">{p.isAvailable ? "Active" : "Inactive"}</td>
+            {products.map((prod) => (
+              <tr key={prod._id}>
+                <td className="px-6 py-4 whitespace-nowrap">{prod.title}</td>
+                <td className="px-6 py-4 whitespace-nowrap">{prod.category}</td>
+                <td className="px-6 py-4 whitespace-nowrap">₹{prod.price}</td>
+                <td className="px-6 py-4">
+                  <table className="text-sm border">
+                    <thead>
+                      <tr className="bg-gray-100">
+                        <th className="px-2 py-1 border">Color, Size</th>
+                        <th className="px-2 py-1 border">Stock</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {rowsFor(prod).map((row, idx) => (
+                        <tr key={idx}>
+                          <td className="px-2 py-1 border">{row.combo}</td>
+                          <td className="px-2 py-1 border">{row.stock}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <button
-                    onClick={() => navigate(`/edit-product/${p._id}`)}
-                    className="text-blue-600 hover:text-blue-800 mr-2"
+                    onClick={() => navigate(`/edit-product/${prod._id}`)}
+                    className="text-blue-600 mr-2"
                   >
                     Edit
                   </button>
                   <button
-                    onClick={() => deleteProduct(p._id)}
-                    className="text-red-600 hover:text-red-800"
+                    onClick={() => deleteProduct(prod._id)}
+                    className="text-red-600"
                   >
                     Delete
                   </button>

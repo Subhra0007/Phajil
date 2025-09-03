@@ -10,10 +10,10 @@ import profileRoutes from "./routes/profile.js";
 import contactRoutes from "./routes/contact.js";
 import { database } from "./config/database.js";
 import adminRoutes from "./routes/admin.js";
-import adminProductRoutes from "./routes/product.js";
-import adminOrderRoutes from "./routes/order.js";
-import adminBlogRoutes from "./routes/blog.js";
-import adminUserRoutes from "./routes/adminUser.js";
+// import adminProductRoutes from "./routes/product.js";
+// import adminOrderRoutes from "./routes/order.js";
+// import adminBlogRoutes from "./routes/blog.js";
+import adminDetailsRoutes from "./routes/adminDetails.js";
 import { cloudinaryConnect } from "./config/cloudinary.js";
 import addressRoutes from "./routes/address.js";
 import publicRoutes from "./routes/public.js";
@@ -94,10 +94,11 @@ app.use("/api/v1/auth", userRoutes);
 app.use("/api/v1/profile", profileRoutes);
 app.use("/api/v1", contactRoutes);
 app.use("/api/v1/admin", adminRoutes);
-app.use("/api/v1/admin", adminProductRoutes); // products
-app.use("/api/v1/admin", adminOrderRoutes);   // orders
-app.use("/api/v1/admin", adminBlogRoutes);    // blogs
-app.use("/api/v1/admin", adminUserRoutes);    // users
+app.use("/api/v1/admin", adminDetailsRoutes);
+// app.use("/api/v1/admin", adminProductRoutes); // products
+// app.use("/api/v1/admin", adminOrderRoutes);   // orders
+// app.use("/api/v1/admin", adminBlogRoutes);    // blogs
+// app.use("/api/v1/admin", adminUserRoutes);    // users
 app.use("/api/v1/address", addressRoutes);
 app.use("/api/v1/public", publicRoutes);
 

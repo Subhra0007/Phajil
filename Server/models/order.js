@@ -39,6 +39,7 @@ const orderSchema = new mongoose.Schema(
     trackingId: { type: String },
     returnEligible: { type: Boolean, default: true },
     returnExpiryDate: { type: Date },
+    deliveryStatusNotes: { type: String, default: "" }, // New field for delivery status notes
   },
   { timestamps: true }
 );

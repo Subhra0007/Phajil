@@ -1,3 +1,4 @@
+// routes/public.js
 import express from "express";
 import Blog from "../models/Blog.js";
 import Product from "../models/Product.js";
@@ -12,7 +13,7 @@ router.get("/products", async (req, res) => {
     const { category } = req.query;
 
     const filter = { isAvailable: true };
-    if (category) filter.category = { $regex: new RegExp(`^${category}$`, 'i') };
+    if (category) filter.category = { $regex: new RegExp(`^${category}$`, "i") };
 
     const products = await Product.find(filter).sort({ createdAt: -1 });
 
@@ -26,7 +27,7 @@ router.get("/products", async (req, res) => {
 router.get("/products/category/:category", async (req, res) => {
   try {
     const docs = await Product.find({
-      category: { $regex: new RegExp(`^${req.params.category}$`, 'i') }, // Case-insensitive regex
+      category: { $regex: new RegExp(`^${req.params.category}$`, "i") }, // Case-insensitive regex
       isAvailable: true,
     }).sort({ createdAt: -1 });
 
@@ -76,9 +77,7 @@ router.get("/blogs/:id", async (req, res) => {
     });
 
     if (!doc) {
-      return res
-        .status(404)
-        .json({ success: false, message: "Blog not found" });
+      return res.status(404).json({ success: false, message: "Blog not found" });
     }
 
     res.json({ success: true, data: doc });

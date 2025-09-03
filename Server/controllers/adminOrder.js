@@ -1,4 +1,4 @@
-//controllers/adminOrder.js
+// controllers/adminOrder.js
 import Order from "../models/Order.js";
 
 // ✅ Get all orders

@@ -1,4 +1,4 @@
-//controllers/adminUser.js
+// controllers/adminUser.js
 import User from "../models/User.js";
 
 export const getUsers = async (req, res) => {

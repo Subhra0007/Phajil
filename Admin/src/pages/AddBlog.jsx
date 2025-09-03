@@ -1,11 +1,11 @@
-//pages/AddBlog
+// pages/AddBlog.jsx
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import API from "../api/axios";
 
 export default function AddBlog() {
-  const [form, setForm] = useState({ title: "", slug: "", content: "", published: false });
-  const [cover, setCover] = useState(null);
+  const [form, setForm] = useState({ title: "", content: "", published: false });
+  const [image, setImage] = useState(null);
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
@@ -18,14 +18,14 @@ export default function AddBlog() {
     e.preventDefault();
     const formData = new FormData();
     Object.keys(form).forEach((key) => formData.append(key, form[key]));
-    if (cover) formData.append("cover", cover);
+    if (image) formData.append("image", image);
     try {
       await API.post("/admin/blogs", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       navigate("/blogs");
     } catch (err) {
-      setError(err.response?.data?.message || "Failed to add blog");
+      setError("Failed to add blog");
     }
   };
 
@@ -36,59 +36,23 @@ export default function AddBlog() {
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label className="block text-sm font-medium">Title</label>
-          <input
-            name="title"
-            value={form.title}
-            onChange={handleChange}
-            className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
-            required
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium">Slug</label>
-          <input
-            name="slug"
-            value={form.slug}
-            onChange={handleChange}
-            className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
-            required
-          />
+          <input name="title" value={form.title} onChange={handleChange} className="w-full p-2 border rounded-md" required />
         </div>
         <div>
           <label className="block text-sm font-medium">Content</label>
-          <textarea
-            name="content"
-            value={form.content}
-            onChange={handleChange}
-            className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
-            rows="6"
-            required
-          />
+          <textarea name="content" value={form.content} onChange={handleChange} className="w-full p-2 border rounded-md" rows="10" required />
         </div>
         <div>
-          <label className="block text-sm font-medium">
-            <input
-              type="checkbox"
-              name="published"
-              checked={form.published}
-              onChange={handleChange}
-              className="mr-2"
-            />
+          <label className="block text-sm font-medium">Image</label>
+          <input type="file" onChange={(e) => setImage(e.target.files[0])} className="w-full p-2" />
+        </div>
+        <div>
+          <label className="inline-flex items-center">
+            <input type="checkbox" name="published" checked={form.published} onChange={handleChange} className="mr-2" />
             Published
           </label>
         </div>
-        <div>
-          <label className="block text-sm font-medium">Cover Image</label>
-          <input
-            type="file"
-            onChange={(e) => setCover(e.target.files[0])}
-            className="w-full p-2"
-          />
-        </div>
-        <button
-          type="submit"
-          className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
-        >
+        <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded-md">
           Save Blog
         </button>
       </form>

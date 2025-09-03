@@ -1,9 +1,14 @@
+// App.jsx
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Products from "./pages/Products";
 import AddProduct from "./pages/AddProduct";
 import EditProduct from "./pages/EditProduct";
+import Category from "./pages/Category";
+import AddCategory from "./pages/AddCategory";
+import EditCategory from "./pages/EditCategory";
+import Inventory from "./pages/Inventory";
 import Blogs from "./pages/Blogs";
 import AddBlog from "./pages/AddBlog";
 import EditBlog from "./pages/EditBlog";
@@ -12,7 +17,7 @@ import OrderDetails from "./pages/OrderDetails";
 import Users from "./pages/Users";
 import UserDetails from "./pages/UserDetails";
 import ProtectedRoute from "./components/ProtectedRoute";
-import Navbar from "./components/Navbar";
+import Layout from "./components/Layout";
 
 export default function App() {
   return (
@@ -20,107 +25,50 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Navigate to="/login" replace />} />
         <Route path="/login" element={<Login />} />
+
+        {/* Protected Layout with Nested Routes */}
         <Route
-          path="/dashboard"
           element={
             <ProtectedRoute>
-              <Navbar />
-              <Dashboard />
+              <Layout />
             </ProtectedRoute>
           }
-        />
+        >
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/products" element={<Products />} />
+          <Route path="/add-product" element={<AddProduct />} />
+          <Route path="/edit-product/:id" element={<EditProduct />} />
+
+          {/* Categories */}
+          <Route path="/categories" element={<Category />} />
+          <Route path="/add-category" element={<AddCategory />} />
+          <Route path="/edit-category/:id" element={<EditCategory />} />
+
+          {/* Inventory */}
+          <Route path="/inventory" element={<Inventory />} />
+
+          {/* Blogs */}
+          <Route path="/blogs" element={<Blogs />} />
+          <Route path="/add-blog" element={<AddBlog />} />
+          <Route path="/edit-blog/:id" element={<EditBlog />} />
+
+          {/* Orders */}
+          <Route path="/orders" element={<Orders />} />
+          <Route path="/orders/:id" element={<OrderDetails />} />
+
+          {/* Users */}
+          <Route path="/users" element={<Users />} />
+          <Route path="/users/:id" element={<UserDetails />} />
+        </Route>
+
+        {/* Fallback */}
         <Route
-          path="/products"
+          path="*"
           element={
-            <ProtectedRoute>
-              <Navbar />
-              <Products />
-            </ProtectedRoute>
+            <h1 className="text-center text-2xl mt-10">404 - Page Not Found</h1>
           }
         />
-        <Route
-          path="/add-product"
-          element={
-            <ProtectedRoute>
-              <Navbar />
-              <AddProduct />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/edit-product/:id"
-          element={
-            <ProtectedRoute>
-              <Navbar />
-              <EditProduct />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/blogs"
-          element={
-            <ProtectedRoute>
-              <Navbar />
-              <Blogs />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/add-blog"
-          element={
-            <ProtectedRoute>
-              <Navbar />
-              <AddBlog />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/edit-blog/:id"
-          element={
-            <ProtectedRoute>
-              <Navbar />
-              <EditBlog />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/orders"
-          element={
-            <ProtectedRoute>
-              <Navbar />
-              <Orders />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/orders/:id"
-          element={
-            <ProtectedRoute>
-              <Navbar />
-              <OrderDetails />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/users"
-          element={
-            <ProtectedRoute>
-              <Navbar />
-              <Users />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/users/:id"
-          element={
-            <ProtectedRoute>
-              <Navbar />
-              <UserDetails />
-            </ProtectedRoute>
-          }
-        />
-        <Route path="*" element={<h1 className="text-center text-2xl mt-10">404 - Page Not Found</h1>} />
       </Routes>
     </BrowserRouter>
-  );
+  );
 }

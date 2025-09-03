@@ -1,24 +1,27 @@
-//src/components/Navbar.js
-import { Link, useNavigate } from "react-router-dom";
+// components/Navbar.jsx
+import { FaBars, FaSignOutAlt } from "react-icons/fa";
 
-export default function Navbar() {
-  const navigate = useNavigate();
-
-  const logout = () => {
-    localStorage.removeItem("token");
-    navigate("/login");
-  };
-
+export default function Navbar({ toggleSidebar, logout }) {
   return (
-    <nav className="bg-gray-800 text-white p-4 flex flex-wrap gap-4 items-center">
-      <Link to="/dashboard" className="hover:text-gray-300">Dashboard</Link>
-      <Link to="/products" className="hover:text-gray-300">Products</Link>
-      <Link to="/blogs" className="hover:text-gray-300">Blogs</Link>
-      <Link to="/orders" className="hover:text-gray-300">Orders</Link>
-      <Link to="/users" className="hover:text-gray-300">Users</Link>
-      <button onClick={logout} className="ml-auto bg-red-600 px-4 py-2 rounded hover:bg-red-700">
-        Logout
-      </button>
+    <nav className="bg-gradient-to-r from-gray-800 to-gray-900 text-white p-4 flex justify-between items-center shadow-lg">
+      <div className="flex items-center">
+        {/* <button
+          onClick={toggleSidebar}
+          className="mr-4 text-white hover:text-gray-300 focus:outline-none"
+        >
+          <FaBars size={24} />
+        </button> */}
+        <span className="text-xl font-bold">Admin Panel</span>
+      </div>
+
+      <div>
+        <button
+          onClick={logout}
+          className="flex items-center bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md transition duration-200"
+        >
+          <FaSignOutAlt className="mr-2" /> Logout
+        </button>
+      </div>
     </nav>
   );
 }

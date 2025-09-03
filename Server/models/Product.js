@@ -1,22 +1,41 @@
-// models/Product.js
+// Server/models/Product.js
 import mongoose from "mongoose";
 
-const productSchema = new mongoose.Schema({
-  images: { type: Array, required: true },
-  price: { type: Number, required: true }, // Current price after discount
-  originalPrice: { type: Number }, // Original price for sale items
-  discountedPercentage: { type: Number, required: true, default: 10 },
-  stock: { type: Number, required: true, default: 0 },
-  soldQuantity: { type: Number, default: 0 },
-  category: { type: String, required: true },
-  badge: { type: Boolean },
-  isAvailable: { type: Boolean, default: true  },
-  offer: { type: Boolean }, // To indicate if it's on sale
-  description: { type: String, required: true },
-  tags: { type: Array },
-  title: { type: String, required: true },
-  sizes: { type: [String] }, // Array of sizes (e.g., S, M, L)
-  colors: { type: [String] }, // Array of colors (e.g., Black, Red)
-}, { timestamps: true });
+const sizeStockSchema = new mongoose.Schema(
+  {
+    size: { type: String, required: true },
+    stock: { type: Number, required: true, default: 0 },
+  },
+  { _id: false }
+);
 
-export default mongoose.models.Product || mongoose.model("Product", productSchema);
+const variantSchema = new mongoose.Schema(
+  {
+    color: { type: String, required: true },
+    images: { type: [String], required: true },
+    sizes: [sizeStockSchema],
+    isDefault: { type: Boolean, default: false }, // ✅ New
+  },
+  { _id: false }
+);
+
+const productSchema = new mongoose.Schema(
+  {
+    title: { type: String, required: true },
+    description: { type: String },
+    price: { type: Number, required: true },
+    originalPrice: { type: Number },
+    discountedPercentage: { type: Number },
+    soldQuantity: { type: Number, default: 0 },
+    category: { type: String, required: true },
+    badge: { type: String },
+    isAvailable: { type: Boolean, default: true },
+    offer: { type: String },
+    tags: [{ type: String }],
+    images: { type: [String], required: true },
+    variants: [variantSchema],
+  },
+  { timestamps: true }
+);
+
+export default mongoose.model("Product", productSchema);
