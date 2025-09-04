@@ -1,3 +1,4 @@
+//App.jsx
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Navbar from "./components/Navbar";
@@ -8,6 +9,7 @@ import ScrollToTop from "./components/ScrollToTop";
 import HomeSection from "./pages/HomeSection";
 import AboutUs from "./pages/AboutUs";
 import Blog from "./pages/Blog";
+import SingleBlog from "./pages/SingleBlog";
 import ContactUs from "./pages/ContactUs";
 import ShippingPolicy from "./pages/ShippingPolicy";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
@@ -20,6 +22,7 @@ import Kolkata from "./pages/Kolkata";
 import Unisex from "./pages/Unisex"
 import Girls from "./pages/Girls";
 import CategoryProducts from "./components/CategoryProducts";
+import SingleProduct from "./pages/SingleProduct";
 
 // Dashboard
 import Dashboard from "./pages/Dashboard";
@@ -46,7 +49,8 @@ function App() {
         {/* Public Routes */}
         <Route path="/" element={<HomeSection />} />
         <Route path="/about" element={<AboutUs />} />
-        <Route path="/blog" element={<Blog />} />
+       <Route path="/blogs" element={<Blog />} />
+       <Route path="/blog/:id" element={<SingleBlog />} />
         <Route path="/contact" element={<ContactUs />} />
         <Route path="/shipping-policy" element={<ShippingPolicy />} />
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
@@ -58,7 +62,9 @@ function App() {
         <Route path="/kolkata" element={<Kolkata />} />
         <Route path="/unisex" element={<Unisex />} />
         <Route path="/girls" element={<Girls />} />
-        <Route path="/category/:category" element={<CategoryProducts />} />
+       {/* Public Routes */}
+        <Route path="/categories/:category" element={<CategoryProducts />} />
+        <Route path="/product/:id" element={<SingleProduct />} />
         {/* Protected Dashboard */}
         <Route element={<ProtectedRoute />}>
           <Route path="/dashboard" element={<Dashboard />}>

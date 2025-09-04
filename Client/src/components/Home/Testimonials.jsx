@@ -65,7 +65,7 @@ export default function TestimonialSlider() {
                   alt={item.text}
                   className="w-24 h-24 rounded-full object-cover mb-4"
                 />
-                <p className="text-sm font-semibold text-center leading-relaxed">
+                <p className="text-sm font-semibold text-center leading-relaxed ">
                   {item.text}
                 </p>
               </div>

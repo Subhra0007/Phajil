@@ -5,7 +5,7 @@ import cloudinary from "cloudinary";
 // Get all blogs
 export const getBlogs = async (req, res) => {
   try {
-    const docs = await Blog.find().sort({ createdAt: -1 }).populate("author", "firstName lastName");
+    const docs = await Blog.find().sort({ createdAt: -1 });
     res.json({ success: true, data: docs });
   } catch (e) {
     res.status(500).json({ success: false, message: e.message });
@@ -15,7 +15,7 @@ export const getBlogs = async (req, res) => {
 // Get single blog
 export const getBlog = async (req, res) => {
   try {
-    const doc = await Blog.findById(req.params.id).populate("author", "firstName lastName");
+    const doc = await Blog.findById(req.params.id);
     if (!doc) return res.status(404).json({ success: false, message: "Not found" });
     res.json({ success: true, data: doc });
   } catch (e) {
@@ -35,17 +35,18 @@ export const createBlog = async (req, res) => {
     }
     const doc = new Blog({
       title: req.body.title,
-      content: req.body.content,
       image,
-      published: req.body.published === "true",
-      author: req.user._id, // Assuming auth middleware sets req.user
+      content: req.body.content,
+      published: Boolean(req.body.published),
     });
     await doc.save();
     res.status(201).json({ success: true, data: doc });
   } catch (e) {
+    console.error("ERROR creating blog:", e.message); // 👈 log error
     res.status(400).json({ success: false, message: e.message });
   }
 };
+
 
 // Update blog
 export const updateBlog = async (req, res) => {

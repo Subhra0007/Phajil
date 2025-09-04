@@ -1,8 +1,9 @@
+//pages/CategoryProducts.jsx
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom"; // ✅ add Link
 import { FaHeart, FaEye } from "react-icons/fa";
 import { IoSyncSharp } from "react-icons/io5";
-import API from "../components/axios";
+import API from "..//components/axios";
 
 export default function CategoryProducts({ category: propCategory }) {
   const { category: routeCategory } = useParams();
@@ -45,8 +46,9 @@ export default function CategoryProducts({ category: propCategory }) {
                 p.variants?.find((v) => v.isDefault) || p.variants?.[0];
 
               return (
-                <div
+                <Link // ✅ Wrap with Link
                   key={p._id}
+                  to={`/product/${p._id}`} 
                   className="group relative bg-gray-100 shadow-md rounded-md overflow-hidden"
                 >
                   {/* Hover Icons */}
@@ -54,13 +56,25 @@ export default function CategoryProducts({ category: propCategory }) {
                     className="absolute top-3 right-3 flex flex-col gap-2 opacity-0 translate-x-5 
                               group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 z-10"
                   >
-                    <button className="w-9 h-9 rounded-full bg-white flex items-center justify-center shadow hover:bg-gray-100 cursor-pointer">
+                    <button
+                      type="button"
+                      className="w-9 h-9 rounded-full bg-white flex items-center justify-center shadow hover:bg-gray-100 cursor-pointer"
+                      onClick={(e) => e.preventDefault()} // ✅ prevent navigation when clicking
+                    >
                       <FaHeart />
                     </button>
-                    <button className="w-9 h-9 rounded-full bg-white flex items-center justify-center shadow hover:bg-gray-100 cursor-pointer">
+                    <button
+                      type="button"
+                      className="w-9 h-9 rounded-full bg-white flex items-center justify-center shadow hover:bg-gray-100 cursor-pointer"
+                      onClick={(e) => e.preventDefault()}
+                    >
                       <FaEye />
                     </button>
-                    <button className="w-9 h-9 rounded-full bg-white flex items-center justify-center shadow hover:bg-gray-100 cursor-pointer">
+                    <button
+                      type="button"
+                      className="w-9 h-9 rounded-full bg-white flex items-center justify-center shadow hover:bg-gray-100 cursor-pointer"
+                      onClick={(e) => e.preventDefault()}
+                    >
                       <IoSyncSharp />
                     </button>
                   </div>
@@ -75,14 +89,16 @@ export default function CategoryProducts({ category: propCategory }) {
                   {/* Product Info */}
                   <div className="p-4">
                     <h3 className="font-semibold text-lg">{p.title}</h3>
-                    <p className="text-gray-600">
-                      Color: {defaultVariant?.color || "N/A"}
-                    </p>
-                    <p className="text-gray-600">
+                    <p className="text-gray-700 text-lg font-bold mt-2">
                       ₹{p.price}{" "}
                       {p.originalPrice && (
-                        <span className="line-through text-sm text-gray-400 ml-2">
+                        <span className="line-through  text-gray-400 ml-2 ">
                           ₹{p.originalPrice}
+                        </span>
+                      )}{"  "}
+                      {p.discountedPercentage && (
+                        <span className=" text-green-600 ml-2">
+                          {p.discountedPercentage}% OFF
                         </span>
                       )}
                     </p>
@@ -91,14 +107,16 @@ export default function CategoryProducts({ category: propCategory }) {
                   {/* Add to Basket (hover reveal) */}
                   <div className="absolute bottom-0 left-0 w-full">
                     <button
+                      type="button"
                       className="w-full bg-red-600 text-white text-sm font-semibold py-3 
                                  opacity-0 translate-y-full group-hover:opacity-100 group-hover:translate-y-0 
                                  transition-all duration-300 cursor-pointer"
+                      onClick={(e) => e.preventDefault()} // ✅ stop navigation when clicking
                     >
                       Add to basket
                     </button>
                   </div>
-                </div>
+                </Link>
               );
             })}
           </div>

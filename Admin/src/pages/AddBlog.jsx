@@ -2,11 +2,13 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import API from "../api/axios";
+import ReactQuill from "react-quill-new";
+import "react-quill-new/dist/quill.snow.css";
 
 export default function AddBlog() {
-  const [form, setForm] = useState({ title: "", content: "", published: false });
-  const [image, setImage] = useState(null);
+  const [form, setForm] = useState({ title: "", content: "", published: false, image: null });
   const [error, setError] = useState("");
+  const [image, setImage] = useState(null);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -14,11 +16,18 @@ export default function AddBlog() {
     setForm({ ...form, [name]: type === "checkbox" ? checked : value });
   };
 
+  const handleContentChange = (value) => {
+    setForm({ ...form, content: value });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData();
-    Object.keys(form).forEach((key) => formData.append(key, form[key]));
+    formData.append("title", form.title);
+    formData.append("content", form.content);
+    formData.append("published", form.published);
     if (image) formData.append("image", image);
+
     try {
       await API.post("/admin/blogs", formData, {
         headers: { "Content-Type": "multipart/form-data" },
@@ -28,6 +37,25 @@ export default function AddBlog() {
       setError("Failed to add blog");
     }
   };
+
+  const modules = {
+    toolbar: [
+      [{ header: [1, 2, 3, 4, false] }],
+      ["bold", "italic", "underline", "blockquote"],
+      [{ list: "ordered" }, { list: "bullet" }, { indent: "-1" }, { indent: "+1" }],
+      [{ align: [] }],
+      ["link", "image"],
+      ["clean"],
+    ],
+  };
+
+  const formats = [
+    "header",
+    "bold", "italic", "underline", "blockquote",
+    "list", "indent",  
+    "align",          
+    "link", "image",
+  ];
 
   return (
     <div className="p-6 max-w-3xl mx-auto">
@@ -39,12 +67,18 @@ export default function AddBlog() {
           <input name="title" value={form.title} onChange={handleChange} className="w-full p-2 border rounded-md" required />
         </div>
         <div>
-          <label className="block text-sm font-medium">Content</label>
-          <textarea name="content" value={form.content} onChange={handleChange} className="w-full p-2 border rounded-md" rows="10" required />
-        </div>
-        <div>
           <label className="block text-sm font-medium">Image</label>
           <input type="file" onChange={(e) => setImage(e.target.files[0])} className="w-full p-2" />
+        </div>
+        <div>
+          <label className="block text-sm font-medium">Content</label>
+          <ReactQuill
+            value={form.content}
+            onChange={handleContentChange}
+            modules={modules}
+            formats={formats}
+            className="w-full border rounded-md"
+          />
         </div>
         <div>
           <label className="inline-flex items-center">

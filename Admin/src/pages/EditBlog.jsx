@@ -2,6 +2,8 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import API from "../api/axios";
+import ReactQuill from "react-quill-new";
+import "react-quill-new/dist/quill.snow.css";
 
 export default function EditBlog() {
   const { id } = useParams();
@@ -18,7 +20,7 @@ export default function EditBlog() {
     try {
       const res = await API.get(`/admin/blogs/${id}`);
       const b = res.data.data;
-      setForm({ title: b.title, content: b.content, published: b.published });
+      setForm({ title: b.title, image: b.image, content: b.content, published: b.published });
     } catch (err) {
       setError("Failed to load blog");
     }
@@ -27,6 +29,10 @@ export default function EditBlog() {
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setForm({ ...form, [name]: type === "checkbox" ? checked : value });
+  };
+
+  const handleContentChange = (value) => {
+    setForm({ ...form, content: value });
   };
 
   const handleSubmit = async (e) => {
@@ -44,6 +50,25 @@ export default function EditBlog() {
     }
   };
 
+const modules = {
+  toolbar: [
+    [{ header: [1, 2, 3, 4, false] }],
+    ["bold", "italic", "underline", "blockquote"],
+    [{ list: "ordered" }, { list: "bullet" }, { indent: "-1" }, { indent: "+1" }],
+    [{ align: [] }], 
+    ["link", "image"],
+    ["clean"],
+  ],
+};
+
+const formats = [
+  "header",
+  "bold", "italic", "underline", "blockquote",
+  "list", "indent", 
+  "align",          
+  "link", "image",
+];
+
   return (
     <div className="p-6 max-w-3xl mx-auto">
       <h1 className="text-3xl font-bold mb-6">Edit Blog</h1>
@@ -53,13 +78,19 @@ export default function EditBlog() {
           <label className="block text-sm font-medium">Title</label>
           <input name="title" value={form.title} onChange={handleChange} className="w-full p-2 border rounded-md" required />
         </div>
-        <div>
-          <label className="block text-sm font-medium">Content</label>
-          <textarea name="content" value={form.content} onChange={handleChange} className="w-full p-2 border rounded-md" rows="10" required />
-        </div>
-        <div>
+          <div>
           <label className="block text-sm font-medium">New Image</label>
           <input type="file" onChange={(e) => setImage(e.target.files[0])} className="w-full p-2" />
+        </div>
+        <div>
+          <label className="block text-sm font-medium">Content</label>
+          <ReactQuill
+            value={form.content}
+            onChange={handleContentChange}
+            modules={modules}
+            formats={formats}
+            className="w-full border rounded-md"
+          />
         </div>
         <div>
           <label className="inline-flex items-center">

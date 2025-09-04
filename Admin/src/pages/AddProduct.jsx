@@ -26,7 +26,7 @@ export default function AddProduct() {
   const colorsList = [
     "Black",
     "Bottle Green",
-    "Navy Blue",
+    "Blue",
     "Red",
     "Yellow",
     "Grey",
